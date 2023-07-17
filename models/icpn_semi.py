@@ -116,7 +116,7 @@ class IncrementalCPN(pl.LightningModule):
         for task in self.tasks[:self.current_task_idx]:
             self.old_classes.extend(task.tolist())
         self.new_classes = self.tasks[self.current_task_idx]
-        # self.protoAug_lambda = 1.0
+        self.protoAug_lambda = 1.0
 
     def on_train_end(self):
         # Calculate the mean and variance of each class in self.new_classes
