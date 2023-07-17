@@ -19,6 +19,8 @@ class IncrementalCPN(pl.LightningModule):
         self.prototypes = nn.ParameterList(
             [nn.Parameter(torch.randn(1, self.dim_feature)) for i in range(num_classes)])
 
+        self.protoAug_lambda = 1.0
+
 
 
     def task_initial(self, current_tasks, means=None):
