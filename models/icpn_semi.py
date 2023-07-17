@@ -19,12 +19,7 @@ class IncrementalCPN(pl.LightningModule):
         self.prototypes = nn.ParameterList(
             [nn.Parameter(torch.randn(1, self.dim_feature)) for i in range(num_classes)])
 
-        # self.radius = 0.1
-        self.old_classes = []
-        for task in self.tasks[:self.current_task_idx]:
-            self.old_classes.extend(task.tolist())
-        self.new_classes = self.tasks[self.current_task_idx]
-        # self.protoAug_lambda = 1.0
+
 
     def task_initial(self, current_tasks, means=None):
         if means is not None:
@@ -115,31 +110,35 @@ class IncrementalCPN(pl.LightningModule):
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
 
+    def on_train_start(self):
+        # self.radius = 0.1
+        self.old_classes = []
+        for task in self.tasks[:self.current_task_idx]:
+            self.old_classes.extend(task.tolist())
+        self.new_classes = self.tasks[self.current_task_idx]
+        # self.protoAug_lambda = 1.0
+
     def on_train_end(self):
         # Calculate the mean and variance of each class in self.new_classes
         class_means = {}
         class_features = {}
         self.eval()
-        for _, X_task, Y_task in self.train_loaders[f"task{self.current_task_idx}"]:
-            targets = Y_task.to(self.device)
-            inputs = X_task[0].to(self.device)
+        for x,targets in self.train_loader:
+            targets = targets.to(self.device)
+            inputs = x.to(self.device)
             for class_id in self.new_classes:
                 indices = (targets == class_id)
                 with torch.no_grad():
                     features = self.encoder(inputs[indices])
                 # If class_id is encountered for the first time, initialize mean and features list
                 if class_id not in class_means:
-                    class_means[class_id] = features.mean(dim=0)
+                    class_means[class_id] = features.mean(dim=0, keepdim=True)
                     class_features[class_id] = [features]
                 # If class_id has been encountered before, update mean and append features
                 else:
                     class_means[class_id] = (class_means[class_id] * len(class_features[class_id]) + features.mean(
-                        dim=0)) / (len(class_features[class_id]) + 1)
+                        dim=0, keepdim=True)) / (len(class_features[class_id]) + 1)
                     class_features[class_id].append(features)
-
-        # # Update prototypes with calculated means
-        # for class_id in class_means:
-        #     self.prototypes[class_id] = nn.Parameter(class_means[class_id])
 
         if self.current_task_idx == 0:
             # Compute average radius
@@ -154,4 +153,5 @@ class IncrementalCPN(pl.LightningModule):
 
             # Store average radius
             self.radius = avg_radius
+
             # self.radius = torch.nn.Parameter(avg_radius, requires_grad=False)

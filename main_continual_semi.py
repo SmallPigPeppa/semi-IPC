@@ -82,6 +82,7 @@ def main():
             callbacks=[lr_monitor]
 
         )
+        model.train_loader = train_loader
         trainer.fit(model, train_loader, test_loader)
         wandb.finish()
 
