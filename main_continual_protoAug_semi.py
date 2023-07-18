@@ -8,7 +8,7 @@ from utils.dataset_utils import get_dataset, get_pretrained_dataset, split_datas
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
-from models.icpn_protoAug_semi import IncrementalCPN
+from models.icpn_protoAug_semi_baseline import IncrementalCPN
 from collections import defaultdict
 import random
 from torch.utils.data import Subset
@@ -19,6 +19,7 @@ def keep_n_samples_per_class(dataset, n):
 
     # Collect samples for each class
     for i, (_, label) in enumerate(dataset):
+        label = label.item()
         class_samples[label].append(i)
 
     new_indices = []
@@ -31,6 +32,7 @@ def keep_n_samples_per_class(dataset, n):
             new_indices.extend(random.sample(samples, n))
 
     new_dataset = Subset(dataset, new_indices)
+    # import pdb;pdb.set_trace()
 
     return new_dataset
 
@@ -91,7 +93,7 @@ def main():
         train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        supervised_data = keep_n_samples_per_class(train_dataset_task, n=250)
+        supervised_data = keep_n_samples_per_class(train_dataset_task, n=20)
         supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True)
 
         train_loaders = {
@@ -116,8 +118,10 @@ def main():
 
         )
         model.train_loaders = train_loaders
+        model.protoAug_start()
         trainer.fit(model, train_loaders, test_loader)
         wandb.finish()
+        model.protoAug_end()
 
 
 if __name__ == '__main__':
