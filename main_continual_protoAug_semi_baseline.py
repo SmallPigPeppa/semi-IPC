@@ -31,6 +31,7 @@ def keep_n_samples_per_class(dataset, n):
             new_indices.extend(random.sample(samples, n))
 
     new_dataset = Subset(dataset, new_indices)
+    import pdb;pdb.set_trace()
 
     return new_dataset
 
