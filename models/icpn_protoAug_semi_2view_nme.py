@@ -248,30 +248,10 @@ class IncrementalCPN(pl.LightningModule):
         preds = torch.argmax(logits, dim=1)
         acc = torch.sum(preds == targets) / targets.shape[0]
 
-        if self.current_task_idx > 0:
-            old_classes = self.old_classes
-            radius = self.radius
-            prototypes = self.prototypes
-            batch_size = self.semi_batch_size
-            batchsize_new = batch_size // 2
-            batchsize_old = batch_size // 2
 
-            # x_new, y_new = batch["semi_data"]
-            x_new = x[:batchsize_new]
-            y_new = targets[:batchsize_new]
 
-            y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
-            # Convert old_y to Python list
-            y_old_list = y_old.tolist()
-            # Index prototype with old_y_list
-            prototype_old = torch.cat([prototypes[i] for i in y_old_list])
-            x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
-
-            y_all = torch.cat([y_new, y_old], dim=0)
-            x_all = torch.cat([x_new, x_old], dim=0)
-        else:
-            x_all = x
-            y_all = targets
+        x_all = x
+        y_all = targets
 
         logits_all = -1. * self.forward(x_all)
         protoAug_loss = F.cross_entropy(logits_all, y_all)
