@@ -129,6 +129,9 @@ class IncrementalCPN(pl.LightningModule):
             targets = targets.to(self.device)
             inputs = x.to(self.device)
             for class_id in self.new_classes:
+                # Skip if the class_id is not in targets
+                if not (targets == class_id).any():
+                    continue
                 class_id = class_id.item()
                 indices = (targets == class_id)
                 features = inputs[indices]
