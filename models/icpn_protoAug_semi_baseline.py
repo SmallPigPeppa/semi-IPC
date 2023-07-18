@@ -21,8 +21,6 @@ class IncrementalCPN(pl.LightningModule):
 
         self.protoAug_lambda = 1.0
 
-
-
     def task_initial(self, current_tasks, means=None):
         if means is not None:
             for i in current_tasks:
@@ -46,12 +44,8 @@ class IncrementalCPN(pl.LightningModule):
         d = torch.sum(d, dim=2)
         return d
 
-    def share_step(self, batch, batch_idx,state='train'):
-        import pdb;pdb.set_trace()
-        if state=='train':
-            x, targets = batch['supervised_loader']
-        else:
-            x, targets = batch
+    def training_step(self, batch, batch_idx):
+        x, targets = batch['supervised_loader']
         d = self.forward(x)
         logits = -1. * d
         # ce loss
@@ -96,25 +90,78 @@ class IncrementalCPN(pl.LightningModule):
 
         loss = ce_loss + pl_loss * self.pl_lambda + protoAug_loss * self.protoAug_lambda
 
-        return {"ce_loss": ce_loss, "pl_loss": pl_loss, 'protoAug_loss': protoAug_loss, "acc": acc, "loss": loss}
-
-    def training_step(self, batch, batch_idx):
-        out = self.share_step(batch, batch_idx,'train')
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, 'protoAug_loss': protoAug_loss, "acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
-        return out
 
     def validation_step(self, batch, batch_idx):
-        out = self.share_step(batch, batch_idx, 'val')
+        x, targets = batch
+        d = self.forward(x)
+        logits = -1. * d
+        # ce loss
+        ce_loss = F.cross_entropy(logits, targets)
+        # pl loss
+        pl_loss = torch.index_select(d, dim=1, index=targets)
+        pl_loss = torch.diagonal(pl_loss)
+        pl_loss = torch.mean(pl_loss)
+        # all loss
+        # loss = ce_loss + pl_loss * self.pl_lambda
+        # acc
+        preds = torch.argmax(logits, dim=1)
+        acc = torch.sum(preds == targets) / targets.shape[0]
+
+        if self.current_task_idx > 0:
+            old_classes = self.old_classes
+            radius = self.radius
+            prototypes = self.prototypes
+            batch_size = self.semi_batch_size
+            batchsize_new = batch_size // 2
+            batchsize_old = batch_size // 2
+
+            # x_new, y_new = batch["semi_data"]
+            x_new = x[:batchsize_new]
+            y_new = targets[:batchsize_new]
+
+            y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
+            # Convert old_y to Python list
+            y_old_list = y_old.tolist()
+            # Index prototype with old_y_list
+            prototype_old = torch.cat([prototypes[i] for i in y_old_list])
+            x_old = prototype_old + torch.randn(batchsize_old, 2).to(self.device) * radius
+
+            y_all = torch.cat([y_new, y_old], dim=0)
+            x_all = torch.cat([x_new, x_old], dim=0)
+        else:
+            x_all = x
+            y_all = targets
+
+        logits_all = -1. * self.forward(x_all)
+        protoAug_loss = F.cross_entropy(logits_all, y_all)
+
+        loss = ce_loss + pl_loss * self.pl_lambda + protoAug_loss * self.protoAug_lambda
+
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, 'protoAug_loss': protoAug_loss, "acc": acc, "loss": loss}
         log_dict = {"val_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
 
-    def test_step(self, batch, batch_idx):
-        out = self.share_step(batch, batch_idx)
-        log_dict = {"test_" + k: v for k, v in out.items()}
-        self.log_dict(log_dict, on_epoch=True, sync_dist=True)
-        return out
+    # def training_step(self, batch, batch_idx):
+    #     out = self.share_step(batch, batch_idx, 'train')
+    #     log_dict = {"train_" + k: v for k, v in out.items()}
+    #     self.log_dict(log_dict, on_epoch=True, sync_dist=True)
+    #     return out
+    #
+    # def validation_step(self, batch, batch_idx):
+    #     out = self.share_step(batch, batch_idx, 'val')
+    #     log_dict = {"val_" + k: v for k, v in out.items()}
+    #     self.log_dict(log_dict, on_epoch=True, sync_dist=True)
+    #     return out
+
+    # def test_step(self, batch, batch_idx):
+    #     out = self.share_step(batch, batch_idx)
+    #     log_dict = {"test_" + k: v for k, v in out.items()}
+    #     self.log_dict(log_dict, on_epoch=True, sync_dist=True)
+    #     return out
 
     def protoAug_start(self):
         # self.radius = 0.1
