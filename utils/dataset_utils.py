@@ -6,7 +6,49 @@ from torch.utils.data.dataset import Dataset, Subset
 from torch.utils.data import TensorDataset, DataLoader
 from typing import Callable, Optional, Tuple, Union, List
 from tqdm import tqdm
+from randaugment import RandAugmentMC
 import os
+
+
+class DualTransformDataset(Dataset):
+    def __init__(self, dataset, transform_weak, transform_strong):
+        self.dataset = dataset
+        self.transform_weak = transform_weak
+        self.transform_strong = transform_strong
+
+    def __getitem__(self, index):
+        image, label = self.dataset[index]
+        return [self.transform_weak(image), self.transform_strong(image)], label
+
+    def __len__(self):
+        return len(self.dataset)
+
+
+def get_dual_dataset(dataset, data_path):
+    if dataset == "cifar100":
+        mean = [0.5071, 0.4867, 0.4408]
+        std = [0.2675, 0.2565, 0.2761]
+
+        train_dataset = torchvision.datasets.CIFAR100(root=data_path, train=True,
+                                                      transform=None,
+                                                      download=True)
+
+        weak = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.Pad(2, padding_mode='reflect'),
+            transforms.RandomCrop(32),
+            transforms.ToTensor(),
+            transforms.Normalize(mean, std)])
+        strong = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.Pad(2, padding_mode='reflect'),
+            transforms.RandomCrop(32),
+            RandAugmentMC(n=2, m=10),
+            transforms.ToTensor(),
+            transforms.Normalize(mean, std)])
+
+        dual_dataset = DualTransformDataset(train_dataset, weak, strong)
+        return dual_dataset
 
 
 def get_dataset(dataset, data_path):
@@ -80,9 +122,9 @@ def split_dataset(dataset: Dataset, task_idx: List[int], tasks: list = None):
 def split_dataset2(x, y, task_idx, tasks):
     current_task = torch.cat(tuple(tasks[i] for i in task_idx))
     mask = [(c in current_task) for c in y]
-    x_task=x[mask]
-    y_task=y[mask]
-    return x_task,y_task
+    x_task = x[mask]
+    y_task = y[mask]
+    return x_task, y_task
 
 
 def get_pretrained_dataset(encoder, train_dataset, test_dataset, tau=1.0, return_means=False):
