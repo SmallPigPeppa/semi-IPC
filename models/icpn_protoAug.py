@@ -73,7 +73,7 @@ class IncrementalCPN(pl.LightningModule):
             y_new = targets[:batchsize_new]
 
 
-            import pdb;pdb.set_trace()
+            # import pdb;pdb.set_trace()
             y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
             # Convert old_y to Python list
             y_old_list = y_old.tolist()
@@ -157,7 +157,7 @@ class IncrementalCPN(pl.LightningModule):
             avg_radius = torch.sqrt(torch.mean(torch.stack(radii)))
 
             # Store average radius
-            import pdb;pdb.set_trace()
+            # import pdb;pdb.set_trace()
             self.radius = avg_radius
 
             # self.radius = torch.nn.Parameter(avg_radius, requires_grad=False)
