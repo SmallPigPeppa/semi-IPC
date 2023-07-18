@@ -112,7 +112,7 @@ class IncrementalCPN(pl.LightningModule):
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
 
-    def on_train_start(self):
+    def protoAug_start(self):
         # self.radius = 0.1
         self.old_classes = []
         for task in self.tasks[:self.current_task_idx]:
@@ -120,7 +120,7 @@ class IncrementalCPN(pl.LightningModule):
         self.new_classes = self.tasks[self.current_task_idx]
         self.protoAug_lambda = 1.0
 
-    def on_train_end(self):
+    def protoAug_end(self):
         # Calculate the mean and variance of each class in self.new_classes
         class_means = {}
         class_features = {}

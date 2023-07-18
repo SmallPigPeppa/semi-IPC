@@ -83,8 +83,10 @@ def main():
 
         )
         model.train_loader = train_loader
+        model.protoAug_start()
         trainer.fit(model, train_loader, test_loader)
         wandb.finish()
+        model.protoAug_end()
 
 
 if __name__ == '__main__':
