@@ -105,6 +105,7 @@ class IncrementalCPN(pl.LightningModule):
         x_unlabel_high_conf = x_unlabel[mask]
         target_unlabel_high_conf = max_logits_unlabel[mask]
         target_unlabel_high_conf_2 = targets_unlabel[mask]
+        target_unlabel_high_conf = targets_unlabel[mask]
 
         # import pdb;pdb.set_trace()
 
