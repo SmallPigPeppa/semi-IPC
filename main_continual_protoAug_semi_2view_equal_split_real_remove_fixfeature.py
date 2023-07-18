@@ -146,10 +146,10 @@ def main():
         )
         model.train_loaders = train_loaders
         model.encoder = encoder
-        model.protoAug_start()
+        # model.protoAug_start()
         trainer.fit(model, train_loaders, test_loader)
         wandb.finish()
-        model.protoAug_end()
+        # model.protoAug_end()
 
 
 if __name__ == '__main__':
