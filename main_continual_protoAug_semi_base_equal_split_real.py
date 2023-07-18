@@ -16,7 +16,6 @@ from torch.utils.data import Subset
 
 def keep_n_samples_per_class(dataset, n, return_means=False):
     class_samples = defaultdict(list)
-    class_sums = defaultdict(list)
 
     # Collect samples for each class
     for i, (sample, label) in enumerate(dataset):
