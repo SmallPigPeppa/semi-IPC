@@ -114,7 +114,8 @@ class IncrementalCPN(pl.LightningModule):
 
         # unlabel data
         x_unlabel, targets_unlabel = batch['unsupervised_loader']
-        logits_unlabel = -1. * self.fix_forward(x_unlabel)
+        with torch.no_grad():
+            logits_unlabel = -1. * self.forward(x_unlabel)
         probabilities_unlabel = F.softmax(logits_unlabel, dim=1)
         _, max_logits_unlabel = torch.max(logits_unlabel, dim=1)
         _, max_probabilities_unlabel = torch.max(probabilities_unlabel, dim=1)
