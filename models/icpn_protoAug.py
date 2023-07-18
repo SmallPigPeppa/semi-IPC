@@ -150,14 +150,14 @@ class IncrementalCPN(pl.LightningModule):
             radii = []
             for class_id in class_features:
                 features = torch.cat(class_features[class_id], dim=0)
-                features = features - class_means[class_id]
+                # Here, replace the class_means with self.prototypes[class_id]
+                # features = features - class_means[class_id]
+                features = features - self.prototypes[class_id]
                 cov = torch.matmul(features.t(), features) / features.shape[0]
                 radius = torch.trace(cov) / features.shape[1]
                 radii.append(radius)
             avg_radius = torch.sqrt(torch.mean(torch.stack(radii)))
 
             # Store average radius
-            # import pdb;pdb.set_trace()
             self.radius = avg_radius
 
-            # self.radius = torch.nn.Parameter(avg_radius, requires_grad=False)
