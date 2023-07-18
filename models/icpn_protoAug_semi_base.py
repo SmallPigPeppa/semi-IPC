@@ -99,6 +99,9 @@ class IncrementalCPN(pl.LightningModule):
         _, max_probabilities_unlabel = torch.max(probabilities_unlabel, dim=1)
         # mask = logits_unlabel[torch.arange(logits_unlabel.shape[0]), max_logits_unlabel] > 0.75
         mask = probabilities_unlabel[torch.arange(probabilities_unlabel.shape[0]), max_probabilities_unlabel] > 0.75
+
+        import pdb;pdb.set_trace()
+
         x_unlabel_high_conf = x_unlabel[mask]
         target_unlabel_high_conf = max_logits_unlabel[mask]
         semi_x_all = torch.cat([x, x_unlabel_high_conf])
