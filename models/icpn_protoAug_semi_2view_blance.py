@@ -6,6 +6,7 @@ from torch.nn import functional as F
 from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 
 
+
 class IncrementalCPN(pl.LightningModule):
     def __init__(self, dim_feature, num_classes, pl_lambda, lr, epochs, warmup_epochs, **kwargs):
         super(IncrementalCPN, self).__init__()
@@ -38,6 +39,7 @@ class IncrementalCPN(pl.LightningModule):
         return [optimizer], [scheduler]
 
     def forward(self, x):
+        self.encoder.eval()
         with torch.no_grad():
             x = self.encoder(x)
         x = x.reshape(-1, 1, self.dim_feature)

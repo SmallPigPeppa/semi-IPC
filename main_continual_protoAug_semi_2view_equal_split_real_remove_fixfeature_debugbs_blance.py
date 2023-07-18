@@ -113,8 +113,8 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True)
+        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True)
+        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
         _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
