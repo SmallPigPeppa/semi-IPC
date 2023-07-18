@@ -93,6 +93,7 @@ class IncrementalCPN(pl.LightningModule):
         out = {"ce_loss": ce_loss, "pl_loss": pl_loss, 'protoAug_loss': protoAug_loss, "acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
+        return out
 
     def validation_step(self, batch, batch_idx):
         x, targets = batch
