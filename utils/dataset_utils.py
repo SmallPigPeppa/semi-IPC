@@ -15,6 +15,8 @@ class DualTransformDataset(Dataset):
         self.dataset = dataset
         self.transform_weak = transform_weak
         self.transform_strong = transform_strong
+        self.classes = dataset.classes
+        self.targets = dataset.targets
 
     def __getitem__(self, index):
         image, label = self.dataset[index]
