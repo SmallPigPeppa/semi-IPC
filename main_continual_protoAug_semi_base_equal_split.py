@@ -98,7 +98,7 @@ def main():
         supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True)
 
         train_loaders = {
-            "unspervised_loader": train_loader,
+            "unsupervised_loader": train_loader,
             "supervised_loader": supervised_loader
         }
 
