@@ -19,7 +19,9 @@ def keep_n_samples_per_class(dataset, n, return_means=False):
 
     # Collect samples for each class
     for i, (sample, label) in enumerate(dataset):
-        label = label.item()
+        # label = label.item()
+        if torch.is_tensor(label):
+            label = label.item()
         class_samples[label].append(i)
 
     new_indices = []
