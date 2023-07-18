@@ -92,7 +92,7 @@ def main():
             test_dataset=test_dataset_task,
             return_means=True)
 
-        train_loader = DataLoader(train_dataset_task, batch_size=156, shuffle=True)
+        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
