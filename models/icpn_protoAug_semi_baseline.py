@@ -46,9 +46,12 @@ class IncrementalCPN(pl.LightningModule):
         d = torch.sum(d, dim=2)
         return d
 
-    def share_step(self, batch, batch_idx):
+    def share_step(self, batch, batch_idx,state='train'):
         import pdb;pdb.set_trace()
-        x, targets = batch['supervised_loader']
+        if state=='train':
+            x, targets = batch['supervised_loader']
+        else:
+            x, targets = batch
         d = self.forward(x)
         logits = -1. * d
         # ce loss
@@ -96,13 +99,13 @@ class IncrementalCPN(pl.LightningModule):
         return {"ce_loss": ce_loss, "pl_loss": pl_loss, 'protoAug_loss': protoAug_loss, "acc": acc, "loss": loss}
 
     def training_step(self, batch, batch_idx):
-        out = self.share_step(batch, batch_idx)
+        out = self.share_step(batch, batch_idx,'train')
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
 
     def validation_step(self, batch, batch_idx):
-        out = self.share_step(batch, batch_idx)
+        out = self.share_step(batch, batch_idx, 'val')
         log_dict = {"val_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
