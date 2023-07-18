@@ -18,7 +18,7 @@ python main_continual_protoAug.py \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \
   --pl_lambda 0.2 \
   --project semi-IPC \
-  --epochs 1
+  --epochs 300
 
 #--pretrained_model /share/wenzhuoliu/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
 #python main_continual_protoAug.py \

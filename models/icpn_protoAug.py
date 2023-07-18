@@ -21,8 +21,6 @@ class IncrementalCPN(pl.LightningModule):
 
         self.protoAug_lambda = 1.0
 
-
-
     def task_initial(self, current_tasks, means=None):
         if means is not None:
             for i in current_tasks:
@@ -125,10 +123,11 @@ class IncrementalCPN(pl.LightningModule):
         class_means = {}
         class_features = {}
         self.eval()
-        for x,targets in self.train_loader:
+        for x, targets in self.train_loader:
             targets = targets.to(self.device)
             inputs = x.to(self.device)
             for class_id in self.new_classes:
+                class_id = class_id.item()
                 indices = (targets == class_id)
                 features = inputs[indices]
                 # If class_id is encountered for the first time, initialize mean and features list
