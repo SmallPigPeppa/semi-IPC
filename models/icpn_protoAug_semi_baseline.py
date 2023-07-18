@@ -47,6 +47,7 @@ class IncrementalCPN(pl.LightningModule):
         return d
 
     def share_step(self, batch, batch_idx):
+        import pdb;pdb.set_trace()
         x, targets = batch['supervised_loader']
         d = self.forward(x)
         logits = -1. * d
