@@ -95,7 +95,7 @@ def main():
         train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
+        supervised_data = keep_n_samples_per_class(train_dataset_task, n=500)
         supervised_loader = DataLoader(supervised_data, batch_size=8, shuffle=True)
 
         train_loaders = {
