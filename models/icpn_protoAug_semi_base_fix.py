@@ -127,7 +127,7 @@ class IncrementalCPN(pl.LightningModule):
         target_unlabel_high_conf = max_logits_unlabel[mask]
         target_unlabel_high_conf_2 = targets_unlabel[mask]
 
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
 
         semi_x_all = torch.cat([x, x_unlabel_high_conf])
         semi_target_all = torch.cat([targets, target_unlabel_high_conf])
