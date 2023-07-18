@@ -79,7 +79,7 @@ class IncrementalCPN(pl.LightningModule):
             y_old_list = y_old.tolist()
             # Index prototype with old_y_list
             prototype_old = torch.cat([prototypes[i] for i in y_old_list])
-            x_old = prototype_old + torch.randn(batchsize_old, 2).to(self.device) * radius
+            x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
 
             y_all = torch.cat([y_new, y_old], dim=0)
             x_all = torch.cat([x_new, x_old], dim=0)
