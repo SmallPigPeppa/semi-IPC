@@ -11,7 +11,7 @@
 
 
 
-python main_continual_protoAug_semi_2view_equal_split_real.py \
+python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature.py \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
   --pretrained_method byol \
