@@ -154,6 +154,7 @@ class IncrementalCPN(pl.LightningModule):
             avg_radius = torch.sqrt(torch.mean(torch.stack(radii)))
 
             # Store average radius
+            import pdb;pdb.set_trace()
             self.radius = avg_radius
 
             # self.radius = torch.nn.Parameter(avg_radius, requires_grad=False)
