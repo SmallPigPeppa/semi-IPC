@@ -130,8 +130,7 @@ class IncrementalCPN(pl.LightningModule):
             inputs = x.to(self.device)
             for class_id in self.new_classes:
                 indices = (targets == class_id)
-                with torch.no_grad():
-                    features = self.encoder(inputs[indices])
+                features = inputs[indices]
                 # If class_id is encountered for the first time, initialize mean and features list
                 if class_id not in class_means:
                     class_means[class_id] = features.mean(dim=0, keepdim=True)
