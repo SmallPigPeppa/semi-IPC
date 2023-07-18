@@ -116,6 +116,10 @@ class IncrementalCPN(pl.LightningModule):
         semi_loss = F.cross_entropy(-1. * self(semi_x_all), semi_target_all)
 
         # loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
+
+        if semi_loss < 0.2:
+            semi_loss = 0.
+
         loss = pl_loss * self.pl_lambda + semi_loss
 
         out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "protoAug_loss": protoAug_loss,
@@ -169,6 +173,7 @@ class IncrementalCPN(pl.LightningModule):
         protoAug_loss = F.cross_entropy(logits_all, y_all)
 
         # loss = ce_loss + pl_loss * self.pl_lambda + protoAug_loss * self.protoAug_lambda
+
         loss = ce_loss + pl_loss * self.pl_lambda
 
         out = {"ce_loss": ce_loss, "pl_loss": pl_loss, 'protoAug_loss': protoAug_loss, "acc": acc, "loss": loss}

@@ -135,7 +135,7 @@ def main():
             gpus=num_gpus,
             max_epochs=args.epochs,
             accumulate_grad_batches=1,
-            gradient_clip_val=1.0,
+            # gradient_clip_val=1.0,
             sync_batchnorm=True,
             accelerator='ddp',
             logger=wandb_logger,
