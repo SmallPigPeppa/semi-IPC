@@ -19,6 +19,7 @@ def keep_n_samples_per_class(dataset, n):
 
     # Collect samples for each class
     for i, (_, label) in enumerate(dataset):
+        label = label.item()
         class_samples[label].append(i)
 
     new_indices = []
