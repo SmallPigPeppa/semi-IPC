@@ -14,13 +14,21 @@ import random
 from torch.utils.data import Subset
 
 
-def keep_n_samples_per_class(dataset, n):
+def keep_n_samples_per_class(dataset, n, return_means=False):
     class_samples = defaultdict(list)
+    class_means = {}
 
     # Collect samples for each class
-    for i, (_, label) in enumerate(dataset):
+    for i, (sample, label) in enumerate(dataset):
         label = label.item()
         class_samples[label].append(i)
+
+        # If return_means is True, then we add up the samples for each class
+        if return_means:
+            if label not in class_means:
+                class_means[label] = sample
+            else:
+                class_means[label] += sample
 
     new_indices = []
 
@@ -31,10 +39,19 @@ def keep_n_samples_per_class(dataset, n):
         else:
             new_indices.extend(random.sample(samples, n))
 
-    new_dataset = Subset(dataset, new_indices)
-    # import pdb;pdb.set_trace()
+    # If return_means is True, then we calculate the means for each class
+    if return_means:
+        for label, sum_samples in class_means.items():
+            num_samples = len(class_samples[label])
+            class_means[label] = sum_samples / num_samples
+            class_means[str(torch.tensor(label))] = torch.tensor(class_means[label])
 
-    return new_dataset
+    new_dataset = Subset(dataset, new_indices)
+
+    if return_means:
+        return new_dataset, class_means
+    else:
+        return new_dataset
 
 
 def main():
@@ -52,7 +69,7 @@ def main():
         [68, 56, 78, 8, 23, 84, 90, 65, 74, 76, 40, 89, 3, 92, 55, 9, 26, 80, 43, 38, 58, 70, 77, 1, 85, 19, 17, 50, 28,
          53, 13, 81, 45, 82, 6, 59, 83, 16, 15, 44, 91, 41, 72, 60, 79, 52, 20, 10, 31, 54, 37, 95, 14, 71, 96, 98, 97,
          2, 64, 66, 42, 22, 35, 86, 24, 34, 87, 21, 99, 0, 88, 27, 18, 94, 11, 12, 47, 25, 30, 46, 62, 69, 36, 61, 7,
-         63,75, 5, 32, 4, 51, 48, 73, 93, 39, 67, 29, 49, 57, 33])
+         63, 75, 5, 32, 4, 51, 48, 73, 93, 39, 67, 29, 49, 57, 33])
     # classes_order = torch.randperm(num_classes)
     # classes_order = torch.tensor(list(range(args.num_classes)))
     # tasks_initial = classes_order[:int(args.num_classes / 2)].chunk(1)
@@ -61,7 +78,7 @@ def main():
     tasks = classes_order.chunk(args.num_tasks)
     train_dataset, test_dataset = get_dataset(dataset=args.dataset, data_path=args.data_path)
 
-    for task_idx in range(0, args.num_tasks ):
+    for task_idx in range(0, args.num_tasks):
         model.tasks = tasks
         model.current_task_idx = task_idx
         model.batch_size = 64
@@ -91,11 +108,14 @@ def main():
             test_dataset=test_dataset_task,
             return_means=True)
 
-        train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
+        # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
+        # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
+
+        train_loader = DataLoader(train_dataset_task, batch_size=8, shuffle=True)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
-        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True)
+        supervised_data, cpn_means = keep_n_samples_per_class(train_dataset_task, n=10, return_means=True)
+        supervised_loader = DataLoader(supervised_data, batch_size=256, shuffle=True)
 
         train_loaders = {
             "unsupervised_loader": train_loader,

@@ -14,13 +14,21 @@ import random
 from torch.utils.data import Subset
 
 
-def keep_n_samples_per_class(dataset, n):
+def keep_n_samples_per_class(dataset, n, return_means=False):
     class_samples = defaultdict(list)
+    class_means = {}
 
     # Collect samples for each class
-    for i, (_, label) in enumerate(dataset):
+    for i, (sample, label) in enumerate(dataset):
         label = label.item()
         class_samples[label].append(i)
+
+        # If return_means is True, then we add up the samples for each class
+        if return_means:
+            if label not in class_means:
+                class_means[label] = sample
+            else:
+                class_means[label] += sample
 
     new_indices = []
 
@@ -31,10 +39,19 @@ def keep_n_samples_per_class(dataset, n):
         else:
             new_indices.extend(random.sample(samples, n))
 
-    new_dataset = Subset(dataset, new_indices)
-    # import pdb;pdb.set_trace()
+    # If return_means is True, then we calculate the means for each class
+    if return_means:
+        for label, sum_samples in class_means.items():
+            num_samples = len(class_samples[label])
+            class_means[label] = sum_samples / num_samples
+            class_means[str(torch.tensor(label))] = torch.tensor(class_means[label])
 
-    return new_dataset
+    new_dataset = Subset(dataset, new_indices)
+
+    if return_means:
+        return new_dataset, class_means
+    else:
+        return new_dataset
 
 
 def main():
