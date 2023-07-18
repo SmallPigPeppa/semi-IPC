@@ -73,7 +73,7 @@ class IncrementalCPN(pl.LightningModule):
             # x_new, y_new = batch["semi_data"]
             x_new = x[:batchsize_new]
             y_new = targets[:batchsize_new]
-
+            import pdb;pdb.set_trace()
             y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
             # Convert old_y to Python list
             y_old_list = y_old.tolist()
