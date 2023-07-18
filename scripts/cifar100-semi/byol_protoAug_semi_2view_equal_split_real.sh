@@ -16,7 +16,7 @@ python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature.py 
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
   --pretrained_method byol \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \
-  --pl_lambda 0.2 \
+  --pl_lambda 1.0 \
   --project semi-IPC \
   --epochs 50 \
   --perfix semi-base-equal-split-real \
