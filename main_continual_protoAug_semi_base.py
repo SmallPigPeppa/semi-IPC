@@ -8,7 +8,7 @@ from utils.dataset_utils import get_dataset, get_pretrained_dataset, split_datas
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
-from models.icpn_protoAug_semi_baseline import IncrementalCPN
+from models.icpn_protoAug_semi_base import IncrementalCPN
 from collections import defaultdict
 import random
 from torch.utils.data import Subset
@@ -93,7 +93,7 @@ def main():
         train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        supervised_data = keep_n_samples_per_class(train_dataset_task, n=20)
+        supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
         supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True)
 
         train_loaders = {

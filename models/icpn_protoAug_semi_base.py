@@ -89,25 +89,22 @@ class IncrementalCPN(pl.LightningModule):
         protoAug_loss = F.cross_entropy(logits_all, y_all)
 
         # loss = ce_loss + pl_loss * self.pl_lambda + protoAug_loss * self.protoAug_lambda
-        loss = ce_loss + pl_loss * self.pl_lambda
-
+        # loss = ce_loss + pl_loss * self.pl_lambda
 
         # unlabel data
         x_unlabel, _ = batch['unsupervised_loader']
-        logits_unlabel = -1.*self(x_unlabel)
-        _, max_indices = torch.max(logits_unlabel, dim=1)
-        mask = logits_unlabel[torch.arange(logits_unlabel.shape[0]), max_indices] > 0.75
+        logits_unlabel = -1. * self(x_unlabel)
+        _, max_logits_unlabel = torch.max(logits_unlabel, dim=1)
+        mask = logits_unlabel[torch.arange(logits_unlabel.shape[0]), max_logits_unlabel] > 0.75
         x_unlabel_high_conf = x_unlabel[mask]
-        predictions_high_conf = max_indices[mask]
+        target_unlabel_high_conf = max_logits_unlabel[mask]
         semi_x_all = torch.cat([x, x_unlabel_high_conf])
-        semi_target_all = torch.cat([targets, predictions_high_conf])
-        semi_loss = F.cross_entropy(-1.*self(semi_x_all), semi_target_all)
+        semi_target_all = torch.cat([targets, target_unlabel_high_conf])
+        semi_loss = F.cross_entropy(-1. * self(semi_x_all), semi_target_all)
 
+        loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
 
-
-
-
-        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, 'protoAug_loss': protoAug_loss, "acc": acc, "loss": loss}
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "protoAug_loss": protoAug_loss,"acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
