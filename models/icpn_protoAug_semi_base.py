@@ -103,12 +103,14 @@ class IncrementalCPN(pl.LightningModule):
         # import pdb;pdb.set_trace()
 
         x_unlabel_high_conf = x_unlabel[mask]
-        target_unlabel_high_conf = max_logits_unlabel[mask]
+        # target_unlabel_high_conf = max_logits_unlabel[mask]
+        target_unlabel_high_conf = targets_unlabel[mask]
         semi_x_all = torch.cat([x, x_unlabel_high_conf])
         semi_target_all = torch.cat([targets, target_unlabel_high_conf])
         semi_loss = F.cross_entropy(-1. * self(semi_x_all), semi_target_all)
 
-        loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
+        # loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
+        loss = pl_loss * self.pl_lambda + semi_loss
 
         out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "protoAug_loss": protoAug_loss,"acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
