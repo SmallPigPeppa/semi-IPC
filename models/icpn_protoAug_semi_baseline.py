@@ -177,7 +177,7 @@ class IncrementalCPN(pl.LightningModule):
         class_means = {}
         class_features = {}
         self.eval()
-        for x, targets in self.train_loader['supervised_loader']:
+        for x, targets in self.train_loaders['supervised_loader']:
             targets = targets.to(self.device)
             inputs = x.to(self.device)
             for class_id in self.new_classes:
