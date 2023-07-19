@@ -19,7 +19,7 @@ python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_deb
   --pl_lambda 0.2 \
   --project semi-IPC \
   --epochs 50 \
-  --perfix all-ipc- \
+  --perfix fewshot-ipc- \
   --cpn_initial means
 
 #--pretrained_model /share/wenzhuoliu/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
