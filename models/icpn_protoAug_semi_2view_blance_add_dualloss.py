@@ -64,26 +64,28 @@ class IncrementalCPN(pl.LightningModule):
         acc = torch.sum(preds == targets) / targets.shape[0]
 
         if self.current_task_idx > 0:
-            old_classes = self.old_classes
-            radius = self.radius
-            prototypes = self.prototypes
-            batch_size = self.semi_batch_size
-            batchsize_new = batch_size // 2
-            batchsize_old = batch_size // 2
-
-            # x_new, y_new = batch["semi_data"]
-            x_new = x[:batchsize_new]
-            y_new = targets[:batchsize_new]
-
-            y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
-            # Convert old_y to Python list
-            y_old_list = y_old.tolist()
-            # Index prototype with old_y_list
-            prototype_old = torch.cat([prototypes[i] for i in y_old_list])
-            x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
-
-            y_all = torch.cat([y_new, y_old], dim=0)
-            x_all = torch.cat([x_new, x_old], dim=0)
+            # old_classes = self.old_classes
+            # radius = self.radius
+            # prototypes = self.prototypes
+            # batch_size = self.semi_batch_size
+            # batchsize_new = batch_size // 2
+            # batchsize_old = batch_size // 2
+            #
+            # # x_new, y_new = batch["semi_data"]
+            # x_new = x[:batchsize_new]
+            # y_new = targets[:batchsize_new]
+            #
+            # y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
+            # # Convert old_y to Python list
+            # y_old_list = y_old.tolist()
+            # # Index prototype with old_y_list
+            # prototype_old = torch.cat([prototypes[i] for i in y_old_list])
+            # x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
+            #
+            # y_all = torch.cat([y_new, y_old], dim=0)
+            # x_all = torch.cat([x_new, x_old], dim=0)
+            x_all = x
+            y_all = targets
         else:
             x_all = x
             y_all = targets
@@ -96,12 +98,13 @@ class IncrementalCPN(pl.LightningModule):
 
         # unlabel data
         x_unlabel, targets_unlabel = batch['unsupervised_loader']
+
         logits_unlabel = -1. * self(x_unlabel)
         probabilities_unlabel = F.softmax(logits_unlabel, dim=1)
         _, max_logits_unlabel = torch.max(logits_unlabel, dim=1)
         _, max_probabilities_unlabel = torch.max(probabilities_unlabel, dim=1)
         # mask = logits_unlabel[torch.arange(logits_unlabel.shape[0]), max_logits_unlabel] > 0.75
-        mask = probabilities_unlabel[torch.arange(probabilities_unlabel.shape[0]), max_probabilities_unlabel] > 0.99
+        mask = probabilities_unlabel[torch.arange(probabilities_unlabel.shape[0]), max_probabilities_unlabel] > 0.95
 
         # import pdb;pdb.set_trace()
 
@@ -115,7 +118,16 @@ class IncrementalCPN(pl.LightningModule):
         semi_x_all = torch.cat([x, x_unlabel_high_conf])
         semi_target_all = torch.cat([targets, target_unlabel_high_conf])
         semi_loss = F.cross_entropy(-1. * self(semi_x_all), semi_target_all)
-        semi_loss = F.cross_entropy(-1. * self(x_unlabel_high_conf), target_unlabel_high_conf)
+
+        [x_weak, x_strong], targets_unlabel = batch['dual_loader']
+        logits_weak = -1. * self(x_weak)
+        probabilities_weak = F.softmax(logits_weak, dim=1)
+        _, max_logits_weak = torch.max(logits_weak, dim=1)
+        _, max_probabilities_weak = torch.max(probabilities_weak, dim=1)
+        mask = probabilities_weak[torch.arange(probabilities_weak.shape[0]), max_probabilities_weak] > 0.95
+        x_strong_high_conf = x_strong[mask]
+        target_strong_high_conf = max_logits_weak[mask]
+        semi_dual_loss = F.cross_entropy(-1. * self(semi_x_all), semi_target_all)
 
         # loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
 
@@ -123,12 +135,11 @@ class IncrementalCPN(pl.LightningModule):
         #     semi_loss = 0.
         # if pl_loss < 80:
         #     pl_loss = 0.
-
-        loss = pl_loss * self.pl_lambda + ce_loss
-        loss = ce_loss
         loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
+        loss = pl_loss * self.pl_lambda + ce_loss
+        loss = ce_loss + semi_dual_loss
 
-        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "protoAug_loss": protoAug_loss,
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss,"semi_dual_loss": semi_dual_loss, "protoAug_loss": protoAug_loss,
                "acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
@@ -257,26 +268,28 @@ class IncrementalCPN(pl.LightningModule):
         acc = torch.sum(preds == targets) / targets.shape[0]
 
         if self.current_task_idx > 0:
-            old_classes = self.old_classes
-            radius = self.radius
-            prototypes = self.prototypes
-            batch_size = self.semi_batch_size
-            batchsize_new = batch_size // 2
-            batchsize_old = batch_size // 2
-
-            # x_new, y_new = batch["semi_data"]
-            x_new = x[:batchsize_new]
-            y_new = targets[:batchsize_new]
-
-            y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
-            # Convert old_y to Python list
-            y_old_list = y_old.tolist()
-            # Index prototype with old_y_list
-            prototype_old = torch.cat([prototypes[i] for i in y_old_list])
-            x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
-
-            y_all = torch.cat([y_new, y_old], dim=0)
-            x_all = torch.cat([x_new, x_old], dim=0)
+            x_all = x
+            y_all = targets
+            # old_classes = self.old_classes
+            # radius = self.radius
+            # prototypes = self.prototypes
+            # batch_size = self.semi_batch_size
+            # batchsize_new = batch_size // 2
+            # batchsize_old = batch_size // 2
+            #
+            # # x_new, y_new = batch["semi_data"]
+            # x_new = x[:batchsize_new]
+            # y_new = targets[:batchsize_new]
+            #
+            # y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
+            # # Convert old_y to Python list
+            # y_old_list = y_old.tolist()
+            # # Index prototype with old_y_list
+            # prototype_old = torch.cat([prototypes[i] for i in y_old_list])
+            # x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
+            #
+            # y_all = torch.cat([y_new, y_old], dim=0)
+            # x_all = torch.cat([x_new, x_old], dim=0)
         else:
             x_all = x
             y_all = targets
