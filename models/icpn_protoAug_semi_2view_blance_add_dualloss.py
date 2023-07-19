@@ -126,8 +126,8 @@ class IncrementalCPN(pl.LightningModule):
         _, max_probabilities_weak = torch.max(probabilities_weak, dim=1)
         mask = probabilities_weak[torch.arange(probabilities_weak.shape[0]), max_probabilities_weak] > 0.95
         x_strong_high_conf = x_strong[mask]
-        target_strong_high_conf = max_logits_weak[mask]
-        semi_dual_loss = F.cross_entropy(-1. * self(semi_x_all), semi_target_all)
+        target_weak_high_conf = max_logits_weak[mask]
+        semi_dual_loss = F.cross_entropy(-1. * self(x_strong_high_conf), target_weak_high_conf)
 
         # loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
 
