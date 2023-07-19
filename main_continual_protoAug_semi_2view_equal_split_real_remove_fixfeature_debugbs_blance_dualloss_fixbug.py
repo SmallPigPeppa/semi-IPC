@@ -96,7 +96,7 @@ def main():
         test_dataset_task = split_dataset(
             test_dataset,
             tasks=tasks,
-            task_idx=list(range(task_idx)),
+            task_idx=list(range(task_idx+1)),
         )
         dual_dataset_task = split_dataset(
             dual_dataset,
