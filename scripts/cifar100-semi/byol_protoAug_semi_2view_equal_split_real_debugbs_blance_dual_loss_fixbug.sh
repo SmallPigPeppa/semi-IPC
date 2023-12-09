@@ -11,8 +11,21 @@
 
 
 
+#python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_debugbs_blance_dualloss_fixbug.py \
+#  --num_tasks 5 \
+#  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
+#  --pretrained_method byol \
+#  --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \
+#  --pl_lambda 0.2 \
+#  --project semi-IPC \
+#  --epochs 50 \
+#  --perfix semi-dual- \
+#  --cpn_initial means
+
+
+
 python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_debugbs_blance_dualloss_fixbug.py \
-  --num_tasks 5 \
+  --num_tasks 10 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
   --pretrained_method byol \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \
