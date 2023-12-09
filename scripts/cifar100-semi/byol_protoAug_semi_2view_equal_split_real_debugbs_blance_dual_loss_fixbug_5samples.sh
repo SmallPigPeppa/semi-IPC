@@ -32,7 +32,7 @@ CUDA_VISIBLE_DEVICES=1 python main_continual_protoAug_semi_2view_equal_split_rea
   --pl_lambda 0.2 \
   --project semi-IPC \
   --epochs 50 \
-  --perfix semi-dual- \
+  --perfix 5samples-semi-dual- \
   --cpn_initial means
 
 #--pretrained_model /share/wenzhuoliu/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
