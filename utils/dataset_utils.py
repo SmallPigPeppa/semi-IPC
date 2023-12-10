@@ -66,7 +66,7 @@ def get_dual_dataset(dataset, data_path):
         strong = transforms.Compose([
             transforms.RandomHorizontalFlip(),
             # transforms.Pad(2, padding_mode='reflect'),
-            transforms.RandomCrop(224),
+            ransforms.RandomResizedCrop(224),
             RandAugmentMC(n=2, m=10),
             transforms.ToTensor(),
             transforms.Normalize(mean, std)])
