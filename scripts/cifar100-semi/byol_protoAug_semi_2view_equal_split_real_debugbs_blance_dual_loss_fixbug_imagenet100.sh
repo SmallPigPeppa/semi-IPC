@@ -36,6 +36,7 @@ python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_deb
   --perfix semi-dual- \
   --cpn_initial means
 
+
 #--pretrained_model /share/wenzhuoliu/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
 #python main_continual_protoAug.py \
 #      --num_tasks 10 \
