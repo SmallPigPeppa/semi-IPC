@@ -113,13 +113,13 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True)
-        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
+        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True,pin_memory=False)
+        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True,pin_memory=True,num_workers=8)
+        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
 
         _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10, return_means=False)
-        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True)
+        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
 
         train_loaders = {
             "unsupervised_loader": train_loader,
