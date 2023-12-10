@@ -60,7 +60,7 @@ def get_dual_dataset(dataset, data_path):
         weak = transforms.Compose([
             transforms.RandomHorizontalFlip(),
             # transforms.Pad(2, padding_mode='reflect'),
-            transforms.RandomCrop(224),
+            transforms.RandomResizedCrop(224),
             transforms.ToTensor(),
             transforms.Normalize(mean, std)])
         strong = transforms.Compose([
