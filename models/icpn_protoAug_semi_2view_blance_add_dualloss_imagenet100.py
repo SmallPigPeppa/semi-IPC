@@ -27,7 +27,7 @@ class IncrementalCPN(pl.LightningModule):
 
         # 存储每个类别的样本
         class_samples = {}
-        dataloader=self.train_dataloader()['new_loader']
+        dataloader=self.train_dataloaders['new_loader']
 
         class_samples = {}
 
