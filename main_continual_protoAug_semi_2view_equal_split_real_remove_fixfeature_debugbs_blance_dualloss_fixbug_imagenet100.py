@@ -105,23 +105,35 @@ class SubsetWithReplacement(Dataset):
 
 
 def keep_n_samples_per_class(dataset, n=10):
-    targets = [dataset.targets[i] for i in range(len(dataset))]  # 获取所有目标
+    try:
+        # 尝试直接获取 targets（对于未被 split_dataset 处理的数据集）
+        targets = dataset.targets
+    except AttributeError:
+        # 对于经过 split_dataset 处理的数据集，需要提取 targets
+        targets = [dataset.dataset.targets[i] for i in dataset.indices]
+
     classes = set(targets)
 
-    # 为每个类别选择n个样本
+    # 为每个类别选择 n 个样本
     selected_indices = []
     for cls in classes:
         cls_indices = [i for i, target in enumerate(targets) if target == cls]
         selected_indices.extend(random.sample(cls_indices, min(n, len(cls_indices))))
 
     # 重复选取样本直到达到原始数据集大小
-    multiplier = len(dataset) // len(selected_indices)
-    additional_indices = random.choices(selected_indices, k=(len(dataset) - multiplier * len(selected_indices)))
+    multiplier = len(targets) // len(selected_indices)
+    additional_indices = random.choices(selected_indices, k=(len(targets) - multiplier * len(selected_indices)))
 
     final_indices = selected_indices * multiplier + additional_indices
     random.shuffle(final_indices)  # 打乱顺序以增加随机性
 
-    return SubsetWithReplacement(dataset, final_indices)
+    # 处理 split_dataset 返回的 Subset 数据集
+    if isinstance(dataset, torch.utils.data.Subset):
+        # 将选定的索引转换回原始数据集的索引
+        final_indices = [dataset.indices[idx] for idx in final_indices]
+        return torch.utils.data.Subset(dataset.dataset, final_indices)
+    else:
+        return SubsetWithReplacement(dataset, final_indices)
 
 
 def main():
@@ -147,7 +159,7 @@ def main():
     # tasks = tasks_initial + tasks_incremental
     tasks = classes_order.chunk(args.num_tasks)
     train_dataset, test_dataset = get_dataset(dataset=args.dataset, data_path=args.data_path)
-    train_dataset = keep_n_samples_per_class(train_dataset, n=10)
+    # train_dataset = keep_n_samples_per_class(train_dataset, n=10)
     dual_dataset = get_dual_dataset(dataset=args.dataset, data_path=args.data_path)
 
     for task_idx in range(0, args.num_tasks):
@@ -191,12 +203,12 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        # new_dataset = keep_n_samples_per_class(train_dataset_task, n=10)
+        new_dataset = keep_n_samples_per_class(train_dataset_task, n=10)
 
         train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
-        # new_loader = DataLoader(new_dataset, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
+        new_loader = DataLoader(new_dataset, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
 
         print("keep_n_samples_per_class...")
         # # _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
@@ -207,7 +219,7 @@ def main():
         train_loaders = {
             "supervised_loader": train_loader,
             "dual_loader": dual_loader,
-            # "supervised_loader2": new_loader,
+            "supervised_loader2": new_loader,
         }
 
         # if args.cpn_initial == "means":
