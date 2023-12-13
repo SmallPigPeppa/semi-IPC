@@ -14,8 +14,6 @@ import random
 from torch.utils.data import Subset
 
 
-
-
 def keep_n_samples_per_class(dataset, n, return_means=False):
     # 首先，提取所有的标签
     if hasattr(dataset, 'targets'):
@@ -140,7 +138,7 @@ def main():
         test_dataset_task = split_dataset(
             test_dataset,
             tasks=tasks,
-            task_idx=list(range(task_idx+1)),
+            task_idx=list(range(task_idx + 1)),
         )
         dual_dataset_task = split_dataset(
             dual_dataset,
@@ -158,9 +156,9 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True,pin_memory=True,num_workers=8)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True,pin_memory=True,num_workers=8)
-        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
+        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=8)
+        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=8)
+        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
 
         # print("keep_n_samples_per_class...")
         # _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
@@ -176,6 +174,7 @@ def main():
             model.task_initial(current_tasks=tasks[task_idx], means=cpn_means)
         else:
             model.task_initial(current_tasks=tasks[task_idx])
+        num_gpus = 8
         trainer = pl.Trainer(
             accelerator='gpu',
             devices=num_gpus,
