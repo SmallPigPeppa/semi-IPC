@@ -24,12 +24,30 @@
 
 
 
-CUDA_VISIBLE_DEVICES=1 python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_debugbs_blance_dualloss_fixbug_imagenet100.py \
+#CUDA_VISIBLE_DEVICES=1 python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_debugbs_blance_dualloss_fixbug_imagenet100.py \
+#  --num_tasks 5 \
+#  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
+#  --pretrained_method byol \
+#  --dataset imagenet100 \
+#  --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet100 \
+#  --pl_lambda 0.2 \
+#  --project semi-IPC \
+#  --epochs 50 \
+#  --perfix semi-dual- \
+#  --cpn_initial means
+
+
+pretrained_dir=/share/wenzhuoliu/code/ssl-pretrained-models/byol
+pretrained_path="$(ls $pretrained_dir/*.ckpt)"
+echo "pretrained_path: $pretrained_path"
+
+
+CUDA_VISIBLE_DEVICES=0 python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_debugbs_blance_dualloss_fixbug_imagenet100.py \
   --num_tasks 5 \
-  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
+  --pretrained_model $pretrained_path \
   --pretrained_method byol \
   --dataset imagenet100 \
-  --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet100 \
+  --data_path /share/wenzhuoliu/torch_ds/imagenet100 \
   --pl_lambda 0.2 \
   --project semi-IPC \
   --epochs 50 \
