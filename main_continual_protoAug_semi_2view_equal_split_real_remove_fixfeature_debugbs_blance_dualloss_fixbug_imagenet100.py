@@ -14,45 +14,45 @@ import random
 from torch.utils.data import Subset
 
 
-def keep_n_samples_per_class(dataset, n, return_means=False):
-    # 首先，提取所有的标签
-    if hasattr(dataset, 'targets'):
-        labels = dataset.targets
-    else:
-        labels = [label for _, label in dataset]
-
-    # 转换成tensor以加快处理速度
-    if not isinstance(labels, torch.Tensor):
-        labels = torch.tensor(labels)
-
-    # 为每个类别收集样本索引
-    class_samples = defaultdict(list)
-    for label in torch.unique(labels):
-        label_indices = (labels == label).nonzero(as_tuple=True)[0]
-        class_samples[label.item()] = label_indices.tolist()
-
-    new_indices = []
-
-    # 为每个类别保留n个样本
-    for label, samples in class_samples.items():
-        if len(samples) <= n:
-            new_indices.extend(samples)
-        else:
-            new_indices.extend(random.sample(samples, n))
-
-    # 创建一个新的数据集
-    new_dataset = Subset(dataset, new_indices)
-
-    # 如果需要返回每类的均值
-    if return_means:
-        class_means = {}
-        for label in class_samples.keys():
-            selected_samples = [dataset[i][0] for i in new_indices if dataset[i][1] == label]
-            class_means[str(torch.tensor(label))] = torch.mean(torch.stack(selected_samples), dim=0)
-
-        return new_dataset, class_means
-    else:
-        return new_dataset
+# def keep_n_samples_per_class(dataset, n, return_means=False):
+#     # 首先，提取所有的标签
+#     if hasattr(dataset, 'targets'):
+#         labels = dataset.targets
+#     else:
+#         labels = [label for _, label in dataset]
+#
+#     # 转换成tensor以加快处理速度
+#     if not isinstance(labels, torch.Tensor):
+#         labels = torch.tensor(labels)
+#
+#     # 为每个类别收集样本索引
+#     class_samples = defaultdict(list)
+#     for label in torch.unique(labels):
+#         label_indices = (labels == label).nonzero(as_tuple=True)[0]
+#         class_samples[label.item()] = label_indices.tolist()
+#
+#     new_indices = []
+#
+#     # 为每个类别保留n个样本
+#     for label, samples in class_samples.items():
+#         if len(samples) <= n:
+#             new_indices.extend(samples)
+#         else:
+#             new_indices.extend(random.sample(samples, n))
+#
+#     # 创建一个新的数据集
+#     new_dataset = Subset(dataset, new_indices)
+#
+#     # 如果需要返回每类的均值
+#     if return_means:
+#         class_means = {}
+#         for label in class_samples.keys():
+#             selected_samples = [dataset[i][0] for i in new_indices if dataset[i][1] == label]
+#             class_means[str(torch.tensor(label))] = torch.mean(torch.stack(selected_samples), dim=0)
+#
+#         return new_dataset, class_means
+#     else:
+#         return new_dataset
 
 
 # def keep_n_samples_per_class(dataset, n, return_means=False):
@@ -89,6 +89,39 @@ def keep_n_samples_per_class(dataset, n, return_means=False):
 #     else:
 #         return new_dataset
 
+
+class SubsetWithReplacement(Dataset):
+    """A subset of a dataset at specified indices, with replacement."""
+
+    def __init__(self, dataset, indices):
+        self.dataset = dataset
+        self.indices = indices
+
+    def __getitem__(self, idx):
+        return self.dataset[self.indices[idx]]
+
+    def __len__(self):
+        return len(self.indices)
+
+
+def keep_n_samples_per_class(dataset, n=10):
+    targets = [dataset.targets[i] for i in range(len(dataset))]  # 获取所有目标
+    classes = set(targets)
+
+    # 为每个类别选择n个样本
+    selected_indices = []
+    for cls in classes:
+        cls_indices = [i for i, target in enumerate(targets) if target == cls]
+        selected_indices.extend(random.sample(cls_indices, min(n, len(cls_indices))))
+
+    # 重复选取样本直到达到原始数据集大小
+    multiplier = len(dataset) // len(selected_indices)
+    additional_indices = random.choices(selected_indices, k=(len(dataset) - multiplier * len(selected_indices)))
+
+    final_indices = selected_indices * multiplier + additional_indices
+    random.shuffle(final_indices)  # 打乱顺序以增加随机性
+
+    return SubsetWithReplacement(dataset, final_indices)
 
 def main():
     seed_everything(5)
@@ -157,9 +190,12 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
+        new_dataset = keep_n_samples_per_class(train_dataset_task, n=10)
+
         train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
+        new_loader = DataLoader(new_dataset, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
 
         print("keep_n_samples_per_class...")
         # # _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
@@ -170,7 +206,7 @@ def main():
         train_loaders = {
             "supervised_loader": train_loader,
             "dual_loader": dual_loader,
-            # "supervised_loader2": supervised_loader2,
+            "supervised_loader2": new_loader,
         }
 
         # if args.cpn_initial == "means":
