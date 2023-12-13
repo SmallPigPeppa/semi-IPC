@@ -14,39 +14,82 @@ import random
 from torch.utils.data import Subset
 
 
-def keep_n_samples_per_class(dataset, n, return_means=False):
-    class_samples = defaultdict(list)
 
-    # Collect samples for each class
-    for i, (sample, label) in enumerate(dataset):
-        # label = label.item()
-        if torch.is_tensor(label):
-            label = label.item()
-        class_samples[label].append(i)
+
+def keep_n_samples_per_class(dataset, n, return_means=False):
+    # 首先，提取所有的标签
+    if hasattr(dataset, 'targets'):
+        labels = dataset.targets
+    else:
+        labels = [label for _, label in dataset]
+
+    # 转换成tensor以加快处理速度
+    if not isinstance(labels, torch.Tensor):
+        labels = torch.tensor(labels)
+
+    # 为每个类别收集样本索引
+    class_samples = defaultdict(list)
+    for label in torch.unique(labels):
+        label_indices = (labels == label).nonzero(as_tuple=True)[0]
+        class_samples[label.item()] = label_indices.tolist()
 
     new_indices = []
 
-    # Keep n samples per class
+    # 为每个类别保留n个样本
     for label, samples in class_samples.items():
         if len(samples) <= n:
             new_indices.extend(samples)
         else:
             new_indices.extend(random.sample(samples, n))
 
-    # Create a new dataset with selected samples
+    # 创建一个新的数据集
     new_dataset = Subset(dataset, new_indices)
 
-    # If return_means is True, calculate means of selected samples for each class
-    class_means = {}
+    # 如果需要返回每类的均值
     if return_means:
+        class_means = {}
         for label in class_samples.keys():
             selected_samples = [dataset[i][0] for i in new_indices if dataset[i][1] == label]
             class_means[str(torch.tensor(label))] = torch.mean(torch.stack(selected_samples), dim=0)
 
-    if return_means:
         return new_dataset, class_means
     else:
         return new_dataset
+
+
+# def keep_n_samples_per_class(dataset, n, return_means=False):
+#     class_samples = defaultdict(list)
+#
+#     # Collect samples for each class
+#     for i, (sample, label) in enumerate(dataset):
+#         # label = label.item()
+#         if torch.is_tensor(label):
+#             label = label.item()
+#         class_samples[label].append(i)
+#
+#     new_indices = []
+#
+#     # Keep n samples per class
+#     for label, samples in class_samples.items():
+#         if len(samples) <= n:
+#             new_indices.extend(samples)
+#         else:
+#             new_indices.extend(random.sample(samples, n))
+#
+#     # Create a new dataset with selected samples
+#     new_dataset = Subset(dataset, new_indices)
+#
+#     # If return_means is True, calculate means of selected samples for each class
+#     class_means = {}
+#     if return_means:
+#         for label in class_samples.keys():
+#             selected_samples = [dataset[i][0] for i in new_indices if dataset[i][1] == label]
+#             class_means[str(torch.tensor(label))] = torch.mean(torch.stack(selected_samples), dim=0)
+#
+#     if return_means:
+#         return new_dataset, class_means
+#     else:
+#         return new_dataset
 
 
 def main():
