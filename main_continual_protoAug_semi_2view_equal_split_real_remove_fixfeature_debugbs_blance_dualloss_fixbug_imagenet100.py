@@ -88,6 +88,7 @@ def main():
         if args == 0:
             wandb_logger.log_hyperparams(args)
         lr_monitor = LearningRateMonitor(logging_interval="epoch")
+        print("split_dataset...")
         train_dataset_task = split_dataset(
             train_dataset,
             tasks=tasks,
@@ -103,6 +104,7 @@ def main():
             tasks=tasks,
             task_idx=[task_idx],
         )
+        print("finished...")
 
         train_dataset_task_fix, test_dataset_task_fix, cpn_means = get_pretrained_dataset(
             encoder=encoder,
@@ -117,8 +119,10 @@ def main():
         dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True,pin_memory=True,num_workers=16)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
 
+        print("keep_n_samples_per_class...")
         _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10, return_means=False)
+        print("finished...")
         supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
 
         train_loaders = {
