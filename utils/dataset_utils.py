@@ -106,8 +106,10 @@ def get_dataset(dataset, data_path):
             RandAugmentMC(n=1, m=1),
             transforms.ToTensor(),
             transforms.Normalize(mean=mean, std=std)])
+        # train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
+        #                                      transform=imagenet_tansforms)
         train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
-                                             transform=imagenet_tansforms)
+                                             transform=strong)
         test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "val"),
                                             transform=imagenet_tansforms)
     elif dataset == "imagenet-subset":
