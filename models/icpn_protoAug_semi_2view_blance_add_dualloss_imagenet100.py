@@ -32,7 +32,7 @@ class IncrementalCPN(pl.LightningModule):
         class_samples = {}
 
         with torch.no_grad():
-            for inputs, labels in tqdm(dataloader,desc="pretrain on trainset"):
+            for inputs, labels in tqdm(dataloader,desc="calculate means"):
                 # 使用编码器处理数据
                 self.encoder.eval()
                 features = self.encoder(inputs)
