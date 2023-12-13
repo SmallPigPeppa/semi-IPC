@@ -139,11 +139,11 @@ class IncrementalCPN(pl.LightningModule):
         # loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
         # loss = pl_loss * self.pl_lambda + ce_loss
         loss = ce_loss + semi_dual_loss
-        # pl_loss = 0.
-        # semi_loss = 0.
+        pl_loss = 0.
+        semi_loss = 0.
         # semi_dual_loss = 0.
-        # protoAug_loss = 0.
-        # acc = 0.
+        protoAug_loss = 0.
+        acc = 0.
         # loss = ce_loss
         out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "semi_dual_loss": semi_dual_loss,
                "protoAug_loss": protoAug_loss,
