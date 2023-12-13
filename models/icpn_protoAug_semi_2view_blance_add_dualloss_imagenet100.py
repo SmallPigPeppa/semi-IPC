@@ -138,13 +138,14 @@ class IncrementalCPN(pl.LightningModule):
         # loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
         # loss = pl_loss * self.pl_lambda + ce_loss
         # loss = ce_loss + semi_dual_loss
-        pl_loss=0.
-        semi_loss=0.
-        semi_dual_loss=0.
-        protoAug_loss=0.
-        acc=0.
-        loss=ce_loss
-        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss,"semi_dual_loss": semi_dual_loss, "protoAug_loss": protoAug_loss,
+        pl_loss = 0.
+        semi_loss = 0.
+        semi_dual_loss = 0.
+        protoAug_loss = 0.
+        acc = 0.
+        loss = ce_loss
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "semi_dual_loss": semi_dual_loss,
+               "protoAug_loss": protoAug_loss,
                "acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
@@ -180,7 +181,6 @@ class IncrementalCPN(pl.LightningModule):
         log_dict = {"val_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
-
 
     def protoAug_start(self):
         # self.radius = 0.1
@@ -230,3 +230,53 @@ class IncrementalCPN(pl.LightningModule):
 
             # Store average radius
             self.radius = avg_radius
+
+    def get_pretrained_dataset(self, encoder, train_dataset, test_dataset, tau=1.0, return_means=False):
+        # device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
+        encoder.eval()
+        encoder.to(self.device)
+
+        train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=8,
+                                  pin_memory=True)
+        test_loader = DataLoader(test_dataset, batch_size=128, shuffle=True, num_workers=8,
+                                 pin_memory=True)
+        x_train = []
+        x_test = []
+        y_train = []
+        y_test = []
+        # encoder = nn.DataParallel(encoder)
+        for x, y in tqdm(iter(train_loader), desc="pretrain on trainset"):
+            x = x.to(device)
+            z = encoder(x)
+            x_train.append(z.cpu().detach().numpy())
+            y_train.append(y.cpu().detach().numpy())
+        for x, y in tqdm(iter(test_loader), desc="pretrain on testset"):
+            x = x.to(device)
+            z = encoder(x)
+            x_test.append(z.cpu().detach().numpy())
+            y_test.append(y.cpu().detach().numpy())
+
+        x_train = np.vstack(x_train)
+        x_test = np.vstack(x_test)
+        y_train = np.hstack(y_train)
+        y_test = np.hstack(y_test)
+
+        x_train = tau * x_train
+        x_test = tau * x_test
+        print("x_train.shape", x_train.shape, "y_train.shape:", y_train.shape)
+        print("x_test.shape:", x_test.shape, "y_test.shape:", y_test.shape)
+        # ds pretrained
+        train_dataset_pretrained = TensorDataset(torch.tensor(x_train), torch.tensor(y_train, dtype=torch.long))
+        test_dataset_pretrained = TensorDataset(torch.tensor(x_test), torch.tensor(y_test, dtype=torch.long))
+
+        if return_means:
+            means = {}
+            current_tasks = np.unique(y_train)
+            for i in current_tasks:
+                index_i = y_train == i
+                x_train_i = x_train[index_i]
+                mean_i = np.mean(x_train_i, axis=0)
+                means.update({str(torch.tensor(i)): torch.tensor(mean_i)})
+            return train_dataset_pretrained, test_dataset_pretrained, means
+        else:
+            return train_dataset_pretrained, test_dataset_pretrained

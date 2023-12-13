@@ -147,7 +147,7 @@ def main():
         )
         print("finished...")
 
-        train_dataset_task_fix, test_dataset_task_fix, cpn_means = get_pretrained_dataset(
+        train_dataset_task_fix, test_dataset_task_fix, cpn_means = model.get_pretrained_dataset(
             encoder=encoder,
             train_dataset=train_dataset_task,
             test_dataset=test_dataset_task,
