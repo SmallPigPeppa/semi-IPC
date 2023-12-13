@@ -178,6 +178,7 @@ def main():
         trainer = pl.Trainer(
             accelerator='gpu',
             devices=num_gpus,
+            strategy='ddp',
             max_epochs=args.epochs,
             accumulate_grad_batches=1,
             # gradient_clip_val=1.0,
