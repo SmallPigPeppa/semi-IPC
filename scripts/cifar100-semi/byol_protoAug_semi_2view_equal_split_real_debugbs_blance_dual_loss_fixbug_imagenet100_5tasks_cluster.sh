@@ -37,6 +37,7 @@ python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_deb
   --cpn_initial means
 
 
+
 #pretrained_dir=/share/wenzhuoliu/code/ssl-pretrained-models/byol
 #pretrained_path="$(ls $pretrained_dir/*.ckpt)"
 #echo "pretrained_path: $pretrained_path"
