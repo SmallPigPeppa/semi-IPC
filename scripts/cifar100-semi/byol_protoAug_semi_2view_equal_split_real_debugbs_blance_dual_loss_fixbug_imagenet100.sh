@@ -31,7 +31,7 @@ python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_deb
   --dataset imagenet100 \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet100 \
   --pl_lambda 0.2 \
-  --project semi-IPC \
+  --project semi-IPC-debug \
   --epochs 50 \
   --perfix semi-dual- \
   --cpn_initial means
