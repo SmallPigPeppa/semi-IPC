@@ -7,6 +7,7 @@ from torch.utils.data import TensorDataset, DataLoader
 from typing import Callable, Optional, Tuple, Union, List
 from tqdm import tqdm
 from randaugment import RandAugmentMC
+from randaugment_imagenet100 import RandAugmentMC as RandAugmentMC100
 import os
 
 
@@ -67,7 +68,7 @@ def get_dual_dataset(dataset, data_path):
             transforms.RandomHorizontalFlip(),
             # transforms.Pad(2, padding_mode='reflect'),
             transforms.RandomResizedCrop(224),
-            RandAugmentMC(n=2, m=10),
+            RandAugmentMC100(n=2, m=10),
             transforms.ToTensor(),
             transforms.Normalize(mean, std)])
 
@@ -98,6 +99,13 @@ def get_dataset(dataset, data_path):
             transforms.ToTensor(),
             transforms.Normalize(mean=mean, std=std),
         ])
+        strong = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            # transforms.Pad(2, padding_mode='reflect'),
+            transforms.RandomResizedCrop(224),
+            RandAugmentMC(n=1, m=1),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=mean, std=std)])
         train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
                                              transform=imagenet_tansforms)
         test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "val"),
