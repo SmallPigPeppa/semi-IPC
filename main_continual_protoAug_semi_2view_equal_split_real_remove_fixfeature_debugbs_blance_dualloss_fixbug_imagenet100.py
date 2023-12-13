@@ -163,12 +163,13 @@ def main():
 
         print("keep_n_samples_per_class...")
         # # _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
-        supervised_data = keep_n_samples_per_class(train_dataset_task, n=10, return_means=False)
+        # supervised_data = keep_n_samples_per_class(train_dataset_task, n=10, return_means=False)
         print("finished...")
-        supervised_loader2 = DataLoader(supervised_data, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
+        # supervised_loader2 = DataLoader(supervised_data, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
 
         train_loaders = {
             "supervised_loader": train_loader,
+            "dual_loader": dual_loader,
             # "supervised_loader2": supervised_loader2,
         }
 
