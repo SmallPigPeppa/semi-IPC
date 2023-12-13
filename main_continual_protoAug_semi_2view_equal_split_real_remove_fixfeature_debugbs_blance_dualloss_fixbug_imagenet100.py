@@ -150,17 +150,16 @@ def compute_class_means(dataset, encoder, batch_size=512):
     # 存储每个类别的特征
     class_samples = {}
 
-    with torch.no_grad():
-        for inputs, labels in tqdm(dataloader,desc="compute means"):
-            # 使用编码器处理数据
-            features = encoder(inputs.to(device))
 
-            for feature, label in zip(features, labels):
-                label = label.item()
-                if label in class_samples:
-                    class_samples[label].append(feature)
-                else:
-                    class_samples[label] = [feature]
+    for inputs, labels in tqdm(dataloader,desc="compute means"):
+        # 使用编码器处理数据
+        features = encoder(inputs.to(device))
+        for feature, label in zip(features, labels):
+            label = label.item()
+            if label in class_samples:
+                class_samples[label].append(feature)
+            else:
+                class_samples[label] = [feature]
 
     # 计算每个类别的特征均值
     class_means = {}
@@ -241,7 +240,7 @@ def main():
         cpn_means = compute_class_means(new_dataset, encoder, batch_size=512)
         train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
-        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
+        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=False, pin_memory=True, num_workers=8)
         new_loader = DataLoader(new_dataset, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
 
         print("keep_n_samples_per_class...")
