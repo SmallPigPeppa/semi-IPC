@@ -183,7 +183,7 @@ def main():
             accumulate_grad_batches=1,
             # gradient_clip_val=1.0,
             sync_batchnorm=True,
-            accelerator='ddp',
+            accelerator='gpu',
             logger=wandb_logger,
             checkpoint_callback=False,
             precision=16,
