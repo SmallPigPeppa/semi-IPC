@@ -162,14 +162,16 @@ def main():
         dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True,pin_memory=True,num_workers=16)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
 
-        # print("keep_n_samples_per_class...")
-        # _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
-        # supervised_data = keep_n_samples_per_class(train_dataset_task, n=10, return_means=False)
-        # print("finished...")
-        # supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
+        print("keep_n_samples_per_class...")
+        _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
+        supervised_data = keep_n_samples_per_class(train_dataset_task, n=10, return_means=False)
+        print("finished...")
+        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True,pin_memory=True,num_workers=8)
 
         train_loaders = {
-            "supervised_loader": train_loader,
+            "unsupervised_loader": train_loader,
+            "supervised_loader": supervised_loader,
+            "dual_loader": dual_loader
         }
 
         if args.cpn_initial == "means":
