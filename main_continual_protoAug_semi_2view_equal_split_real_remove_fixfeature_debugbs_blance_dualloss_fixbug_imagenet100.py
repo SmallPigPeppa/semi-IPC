@@ -148,11 +148,11 @@ def main():
         )
         print("finished...")
         print('model.device:',model.device)
-        train_dataset_task_fix, test_dataset_task_fix, cpn_means = model.get_pretrained_dataset(
-            encoder=encoder,
-            train_dataset=train_dataset_task,
-            test_dataset=test_dataset_task,
-            return_means=True)
+        # train_dataset_task_fix, test_dataset_task_fix, cpn_means = get_pretrained_dataset(
+        #     encoder=encoder,
+        #     train_dataset=train_dataset_task,
+        #     test_dataset=test_dataset_task,
+        #     return_means=True)
 
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
@@ -171,10 +171,10 @@ def main():
             "supervised_loader": train_loader,
         }
 
-        if args.cpn_initial == "means":
-            model.task_initial(current_tasks=tasks[task_idx], means=cpn_means)
-        else:
-            model.task_initial(current_tasks=tasks[task_idx])
+        # if args.cpn_initial == "means":
+        #     model.task_initial(current_tasks=tasks[task_idx], means=cpn_means)
+        # else:
+        model.task_initial(current_tasks=tasks[task_idx])
         num_gpus = 8
         trainer = pl.Trainer(
             accelerator='gpu',
