@@ -4,7 +4,7 @@ import pytorch_lightning as pl
 from torch import nn
 from torch.nn import functional as F
 from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
-
+from torch.utils.data import DataLoader
 
 class IncrementalCPN(pl.LightningModule):
     def __init__(self, dim_feature, num_classes, pl_lambda, lr, epochs, warmup_epochs, **kwargs):
