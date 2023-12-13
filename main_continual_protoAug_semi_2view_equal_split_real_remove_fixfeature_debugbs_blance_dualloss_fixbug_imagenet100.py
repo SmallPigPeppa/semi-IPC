@@ -169,7 +169,7 @@ def main():
 
         train_loaders = {
             "supervised_loader": train_loader,
-            "supervised_loader2": supervised_loader2,
+            # "supervised_loader2": supervised_loader2,
         }
 
         # if args.cpn_initial == "means":
