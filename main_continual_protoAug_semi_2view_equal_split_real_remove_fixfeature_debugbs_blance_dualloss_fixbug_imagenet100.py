@@ -185,7 +185,8 @@ def main():
             sync_batchnorm=True,
             # accelerator='gpu',
             logger=wandb_logger,
-            checkpoint_callback=False,
+            # checkpoint_callback=False,
+            enable_checkpointing=None,
             precision=16,
             callbacks=[lr_monitor]
 
