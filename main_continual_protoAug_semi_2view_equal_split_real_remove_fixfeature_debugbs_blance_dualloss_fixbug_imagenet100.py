@@ -95,7 +95,7 @@ def keep_n_samples_per_class(dataset, n, return_means=False):
 def main():
     seed_everything(5)
     args = parse_args_cpn()
-    num_gpus = [0]
+    num_gpus = [0,1,2,3,4,5,6,7]
     if "cifar" in args.dataset:
         encoder = get_pretrained_encoder(args.pretrained_model, cifar=True)
     else:
