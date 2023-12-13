@@ -141,12 +141,12 @@ class IncrementalCPN(pl.LightningModule):
         # loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
         # loss = pl_loss * self.pl_lambda + ce_loss
 
-        if ce_loss < 0.005:
-            ce_loss_valid = 0.
-        else:
-            ce_loss_valid = ce_loss
+        # if ce_loss < 0.005:
+        #     ce_loss_valid = 0.
+        # else:
+        #     ce_loss_valid = ce_loss
 
-        loss = ce_loss_valid + semi_dual_loss
+        loss = ce_loss + semi_dual_loss
         # pl_loss = 0.
         semi_loss = 0.
         # semi_dual_loss = 0.
