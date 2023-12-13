@@ -100,7 +100,7 @@ def main():
         encoder = get_pretrained_encoder(args.pretrained_model, cifar=False)
 
     model = IncrementalCPN(**args.__dict__)
-    model.device='gpu'
+
 
     classes_order = torch.tensor(
         [68, 56, 78, 8, 23, 84, 90, 65, 74, 76, 40, 89, 3, 92, 55, 9, 26, 80, 43, 38, 58, 70, 77, 1, 85, 19, 17, 50, 28,
@@ -147,7 +147,7 @@ def main():
             task_idx=[task_idx],
         )
         print("finished...")
-
+        print('model.device:',model.device)
         train_dataset_task_fix, test_dataset_task_fix, cpn_means = model.get_pretrained_dataset(
             encoder=encoder,
             train_dataset=train_dataset_task,
