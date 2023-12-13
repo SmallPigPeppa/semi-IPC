@@ -177,13 +177,13 @@ def main():
         else:
             model.task_initial(current_tasks=tasks[task_idx])
         trainer = pl.Trainer(
-            # accelerator='gpu',
-            gpus=num_gpus,
+            accelerator='gpu',
+            devices=num_gpus,
             max_epochs=args.epochs,
             accumulate_grad_batches=1,
             # gradient_clip_val=1.0,
             sync_batchnorm=True,
-            accelerator='gpu',
+            # accelerator='gpu',
             logger=wandb_logger,
             checkpoint_callback=False,
             precision=16,
