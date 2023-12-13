@@ -7,6 +7,7 @@ from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+
 class IncrementalCPN(pl.LightningModule):
     def __init__(self, dim_feature, num_classes, pl_lambda, lr, epochs, warmup_epochs, **kwargs):
         super(IncrementalCPN, self).__init__()
@@ -21,7 +22,6 @@ class IncrementalCPN(pl.LightningModule):
             [nn.Parameter(torch.randn(1, self.dim_feature)) for i in range(num_classes)])
 
         self.protoAug_lambda = 1.0
-
 
     def task_initial(self, current_tasks, means=None):
         if means is not None:
@@ -56,15 +56,15 @@ class IncrementalCPN(pl.LightningModule):
         logits = -1. * d
         # ce loss
         ce_loss = F.cross_entropy(logits, targets)
-        # # pl loss
-        # pl_loss = torch.index_select(d, dim=1, index=targets)
-        # pl_loss = torch.diagonal(pl_loss)
-        # pl_loss = torch.mean(pl_loss)
-        # # all loss
-        # # loss = ce_loss + pl_loss * self.pl_lambda
-        # # acc
-        # preds = torch.argmax(logits, dim=1)
-        # acc = torch.sum(preds == targets) / targets.shape[0]
+        # pl loss
+        pl_loss = torch.index_select(d, dim=1, index=targets)
+        pl_loss = torch.diagonal(pl_loss)
+        pl_loss = torch.mean(pl_loss)
+        # all loss
+        # loss = ce_loss + pl_loss * self.pl_lambda
+        # acc
+        preds = torch.argmax(logits, dim=1)
+        acc = torch.sum(preds == targets) / targets.shape[0]
         #
         # if self.current_task_idx > 0:
         #     # old_classes = self.old_classes
@@ -134,18 +134,24 @@ class IncrementalCPN(pl.LightningModule):
 
         # loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
 
-        # if semi_loss < 0.2:
-        #     semi_loss = 0.
+        if ce_loss < 0.2:
+            semi_loss = 0.
         # if pl_loss < 80:
         #     pl_loss = 0.
         # loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
         # loss = pl_loss * self.pl_lambda + ce_loss
-        loss = ce_loss + semi_dual_loss
-        pl_loss = 0.
+
+        if ce_loss < 0.005:
+            ce_loss_valid = 0.
+        else:
+            ce_loss_valid = ce_loss
+
+        loss = ce_loss_valid + semi_dual_loss
+        # pl_loss = 0.
         semi_loss = 0.
         # semi_dual_loss = 0.
         protoAug_loss = 0.
-        acc = 0.
+        # acc = 0.
         # loss = ce_loss
         out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "semi_dual_loss": semi_dual_loss,
                "protoAug_loss": protoAug_loss,
@@ -233,4 +239,3 @@ class IncrementalCPN(pl.LightningModule):
 
             # Store average radius
             self.radius = avg_radius
-
