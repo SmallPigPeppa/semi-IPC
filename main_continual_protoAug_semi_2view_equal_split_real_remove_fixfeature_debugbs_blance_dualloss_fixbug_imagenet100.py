@@ -118,8 +118,8 @@ def main():
     for task_idx in range(0, args.num_tasks):
         model.tasks = tasks
         model.current_task_idx = task_idx
-        model.batch_size = 64
-        model.semi_batch_size = 64
+        # model.batch_size = 64
+        # model.semi_batch_size = 64
         wandb_logger = WandbLogger(
             name=f"{args.perfix}{args.dataset}-{args.pretrained_method}-lambda{args.pl_lambda}-{args.num_tasks}tasks-steps{task_idx}",
             project=args.project,
@@ -156,8 +156,8 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=8)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=8)
+        train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
+        dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
 
         # print("keep_n_samples_per_class...")
