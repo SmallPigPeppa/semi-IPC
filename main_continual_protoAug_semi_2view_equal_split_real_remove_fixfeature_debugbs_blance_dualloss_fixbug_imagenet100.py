@@ -11,7 +11,7 @@ from utils.args_utils import parse_args_cpn
 from models.icpn_protoAug_semi_2view_blance_add_dualloss_imagenet100 import IncrementalCPN
 from collections import defaultdict
 import random
-from torch.utils.data import Subset,Dataset
+from torch.utils.data import Subset, Dataset
 
 
 # def keep_n_samples_per_class(dataset, n, return_means=False):
@@ -123,6 +123,7 @@ def keep_n_samples_per_class(dataset, n=10):
 
     return SubsetWithReplacement(dataset, final_indices)
 
+
 def main():
     seed_everything(5)
     args = parse_args_cpn()
@@ -133,7 +134,6 @@ def main():
         encoder = get_pretrained_encoder(args.pretrained_model, cifar=False)
 
     model = IncrementalCPN(**args.__dict__)
-
 
     classes_order = torch.tensor(
         [68, 56, 78, 8, 23, 84, 90, 65, 74, 76, 40, 89, 3, 92, 55, 9, 26, 80, 43, 38, 58, 70, 77, 1, 85, 19, 17, 50, 28,
@@ -147,6 +147,7 @@ def main():
     # tasks = tasks_initial + tasks_incremental
     tasks = classes_order.chunk(args.num_tasks)
     train_dataset, test_dataset = get_dataset(dataset=args.dataset, data_path=args.data_path)
+    train_dataset = keep_n_samples_per_class(train_dataset, n=10)
     dual_dataset = get_dual_dataset(dataset=args.dataset, data_path=args.data_path)
 
     for task_idx in range(0, args.num_tasks):
@@ -180,7 +181,7 @@ def main():
             task_idx=[task_idx],
         )
         print("finished...")
-        print('model.device:',model.device)
+        print('model.device:', model.device)
         # train_dataset_task_fix, test_dataset_task_fix, cpn_means = get_pretrained_dataset(
         #     encoder=encoder,
         #     train_dataset=train_dataset_task,
@@ -190,12 +191,12 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        new_dataset = keep_n_samples_per_class(train_dataset_task, n=10)
+        # new_dataset = keep_n_samples_per_class(train_dataset_task, n=10)
 
         train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
-        new_loader = DataLoader(new_dataset, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
+        # new_loader = DataLoader(new_dataset, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
 
         print("keep_n_samples_per_class...")
         # # _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
@@ -206,7 +207,7 @@ def main():
         train_loaders = {
             "supervised_loader": train_loader,
             "dual_loader": dual_loader,
-            "supervised_loader2": new_loader,
+            # "supervised_loader2": new_loader,
         }
 
         # if args.cpn_initial == "means":
