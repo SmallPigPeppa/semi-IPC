@@ -103,7 +103,7 @@ def get_dataset(dataset, data_path):
             transforms.RandomHorizontalFlip(),
             # transforms.Pad(2, padding_mode='reflect'),
             transforms.RandomResizedCrop(224),
-            RandAugmentMC(n=1, m=2),
+            RandAugmentMC100(n=2, m=10),
             transforms.ToTensor(),
             transforms.Normalize(mean=mean, std=std)])
         # train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),

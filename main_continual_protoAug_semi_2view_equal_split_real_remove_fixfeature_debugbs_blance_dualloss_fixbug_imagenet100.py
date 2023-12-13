@@ -239,9 +239,10 @@ def main():
 
         new_dataset = keep_n_samples_per_class(train_dataset_task, n=10)
         cpn_means = compute_class_means(new_dataset, encoder, batch_size=512)
-        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=8)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=8)
-        new_loader = DataLoader(new_dataset, batch_size=256, shuffle=True, pin_memory=True, num_workers=8)
+        bs=64
+        train_loader = DataLoader(train_dataset_task, batch_size=bs, shuffle=True, pin_memory=True, num_workers=8)
+        dual_loader = DataLoader(dual_dataset_task, batch_size=bs, shuffle=True, pin_memory=True, num_workers=8)
+        new_loader = DataLoader(new_dataset, batch_size=bs, shuffle=True, pin_memory=True, num_workers=8)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=False, pin_memory=True, num_workers=8)
 
 
