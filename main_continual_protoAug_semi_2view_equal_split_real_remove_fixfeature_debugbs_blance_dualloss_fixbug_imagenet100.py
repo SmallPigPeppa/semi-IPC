@@ -219,7 +219,7 @@ def main():
         train_loaders = {
             "supervised_loader": train_loader,
             "dual_loader": dual_loader,
-            "supervised_loader2": new_loader,
+            "new_loader": new_loader,
         }
 
         # if args.cpn_initial == "means":
