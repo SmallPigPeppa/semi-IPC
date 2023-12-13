@@ -22,6 +22,41 @@ class IncrementalCPN(pl.LightningModule):
 
         self.protoAug_lambda = 1.0
 
+    def on_train_start(self):
+        # means
+
+        # 存储每个类别的样本
+        class_samples = {}
+        dataloader=self.train_dataloader()['new_loader']
+
+        class_samples = {}
+
+        with torch.no_grad():
+            for inputs, labels in tqdm(dataloader,desc="pretrain on trainset"):
+                # 使用编码器处理数据
+                self.encoder.eval()
+                features = self.encoder(inputs)
+                for feature, label in zip(features, labels):
+                    label = label.item()
+                    if label in class_samples:
+                        class_samples[label].append(feature)
+                    else:
+                        class_samples[label] = [feature]
+
+        # 计算每个类别的特征均值
+        class_means = {}
+        for label, features in class_samples.items():
+            class_means[str(torch.tensor(label))] = torch.mean(torch.stack(features), dim=0)
+
+        # inital class_mean
+        for i in self.current_tasks:
+            self.prototypes[i].data = torch.nn.Parameter((class_means[str(i)]).reshape(1, -1))
+        no_grad_idx = [i for i in range(self.num_calsses) if i not in self.current_tasks]
+        for i in no_grad_idx:
+            self.prototypes[i].requires_grad = False
+        for i in self.current_tasks:
+            self.prototypes[i].requires_grad = True
+
     def task_initial(self, current_tasks, means=None):
         if means is not None:
             for i in current_tasks:
