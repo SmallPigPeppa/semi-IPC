@@ -11,7 +11,7 @@ from utils.args_utils import parse_args_cpn
 from models.icpn_protoAug_semi_2view_blance_add_dualloss_imagenet100 import IncrementalCPN
 from collections import defaultdict
 import random
-from torch.utils.data import Subset
+from torch.utils.data import Subset,Dataset
 
 
 # def keep_n_samples_per_class(dataset, n, return_means=False):
