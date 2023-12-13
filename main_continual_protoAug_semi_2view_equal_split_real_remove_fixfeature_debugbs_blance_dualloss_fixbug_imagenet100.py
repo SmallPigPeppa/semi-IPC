@@ -136,6 +136,39 @@ def keep_n_samples_per_class(dataset, n=10):
         return SubsetWithReplacement(dataset, final_indices)
 
 
+def compute_class_means(dataset, encoder, batch_size=128):
+    device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
+
+    # 创建 DataLoader
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+
+    # 确保编码器处于评估模式
+    encoder.eval()
+    encoder.to(device)
+
+    # 存储每个类别的特征
+    class_samples = {}
+
+    with torch.no_grad():
+        for inputs, labels in tqdm(dataloader,desc="compute means"):
+            # 使用编码器处理数据
+            features = encoder(inputs.to(device))
+
+            for feature, label in zip(features, labels):
+                label = label.item()
+                if label in class_samples:
+                    class_samples[label].append(feature)
+                else:
+                    class_samples[label] = [feature]
+
+    # 计算每个类别的特征均值
+    class_means = {}
+    for label, features in class_samples.items():
+        class_means[str(torch.tensor(label))] = torch.mean(torch.stack(features), dim=0)
+
+    return class_means
+
+
 def main():
     seed_everything(5)
     args = parse_args_cpn()
@@ -204,7 +237,7 @@ def main():
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
         new_dataset = keep_n_samples_per_class(train_dataset_task, n=10)
-
+        cpn_means = compute_class_means(new_dataset, encoder, batch_size=128)
         train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
@@ -222,10 +255,10 @@ def main():
             "new_loader": new_loader,
         }
 
-        # if args.cpn_initial == "means":
-        #     model.task_initial(current_tasks=tasks[task_idx], means=cpn_means)
-        # else:
-        model.task_initial(current_tasks=tasks[task_idx])
+        if args.cpn_initial == "means":
+            model.task_initial(current_tasks=tasks[task_idx], means=cpn_means)
+        else:
+            model.task_initial(current_tasks=tasks[task_idx])
         num_gpus = 1
         trainer = pl.Trainer(
             accelerator='gpu',
