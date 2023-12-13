@@ -12,6 +12,7 @@ from models.icpn_protoAug_semi_2view_blance_add_dualloss_imagenet100 import Incr
 from collections import defaultdict
 import random
 from torch.utils.data import Subset, Dataset
+from tqdm import tqdm
 
 
 # def keep_n_samples_per_class(dataset, n, return_means=False):
