@@ -137,7 +137,7 @@ def keep_n_samples_per_class(dataset, n=10):
         return SubsetWithReplacement(dataset, final_indices)
 
 
-def compute_class_means(dataset, encoder, batch_size=128):
+def compute_class_means(dataset, encoder, batch_size=512):
     device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
 
     # 创建 DataLoader
