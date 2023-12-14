@@ -8,7 +8,7 @@ from utils.dataset_utils import get_dataset, get_pretrained_dataset, split_datas
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
-from models.icpn_protoAug_semi_2view import IncrementalCPN
+from models.icpn_protoAug_semi_2view_blance_add_dualloss import IncrementalCPN
 from collections import defaultdict
 import random
 from torch.utils.data import Subset
@@ -77,8 +77,8 @@ def main():
     for task_idx in range(0, args.num_tasks):
         model.tasks = tasks
         model.current_task_idx = task_idx
-        model.batch_size = 64
-        model.semi_batch_size = 64
+        # model.batch_size = 64
+        # model.semi_batch_size = 64
         wandb_logger = WandbLogger(
             name=f"{args.perfix}{args.dataset}-{args.pretrained_method}-lambda{args.pl_lambda}-{args.num_tasks}tasks-steps{task_idx}",
             project=args.project,
@@ -96,12 +96,12 @@ def main():
         test_dataset_task = split_dataset(
             test_dataset,
             tasks=tasks,
-            task_idx=list(range(task_idx + 1)),
+            task_idx=list(range(task_idx+1)),
         )
         dual_dataset_task = split_dataset(
             dual_dataset,
             tasks=tasks,
-            task_idx=list(range(task_idx + 1)),
+            task_idx=[task_idx],
         )
 
         train_dataset_task_fix, test_dataset_task_fix, cpn_means = get_pretrained_dataset(
@@ -113,13 +113,13 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True)
-        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
+        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True,pin_memory=True, num_workers=4)
+        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True,pin_memory=True, num_workers=4)
+        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True,pin_memory=True, num_workers=4)
 
         _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10, return_means=False)
-        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True)
+        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True,pin_memory=True, num_workers=4)
 
         train_loaders = {
             "unsupervised_loader": train_loader,
