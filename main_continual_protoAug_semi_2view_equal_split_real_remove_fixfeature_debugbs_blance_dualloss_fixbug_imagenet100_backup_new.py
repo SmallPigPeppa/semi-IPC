@@ -8,7 +8,7 @@ from utils.dataset_utils import get_dataset, get_pretrained_dataset, split_datas
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
-from models.icpn_protoAug_semi_2view_blance_add_dualloss import IncrementalCPN
+from models.icpn_protoAug_semi_2view_blance_add_dualloss_backup_new import IncrementalCPN
 from collections import defaultdict
 import random
 from torch.utils.data import Subset
@@ -161,15 +161,15 @@ def main():
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
         train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=False)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=16)
-        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
+        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
+        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=4)
 
         print("keep_n_samples_per_class...")
         # _ = keep_n_samples_per_class(train_dataset_task_fix, n=10)
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
         cpn_means = compute_class_means(supervised_data, encoder)
         print("finished...")
-        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True, pin_memory=True, num_workers=8)
+        supervised_loader = DataLoader(supervised_data, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
 
         train_loaders = {
             "unsupervised_loader": train_loader,
