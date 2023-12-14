@@ -267,7 +267,7 @@ def main():
             model.task_initial(current_tasks=tasks[task_idx], means=cpn_means)
         else:
             model.task_initial(current_tasks=tasks[task_idx])
-        num_gpus = 1
+        num_gpus = 2
         trainer = pl.Trainer(
             # accelerator='gpu',
             gpus=num_gpus,
