@@ -245,10 +245,10 @@ def main():
         # new_loader = DataLoader(new_dataset, batch_size=bs, shuffle=True, pin_memory=True, num_workers=8)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=False, pin_memory=True, num_workers=8)
 
-        train_loader = DataLoader(train_dataset_task, batch_size=bs, shuffle=True, pin_memory=True)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=bs, shuffle=True, pin_memory=True)
-        new_loader = DataLoader(new_dataset, batch_size=bs, shuffle=True, pin_memory=True)
-        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=False, pin_memory=True, num_workers=8)
+        train_loader = DataLoader(train_dataset_task, batch_size=bs, shuffle=True, pin_memory=True, num_workers=4)
+        dual_loader = DataLoader(dual_dataset_task, batch_size=bs, shuffle=True, pin_memory=True, num_workers=4)
+        new_loader = DataLoader(new_dataset, batch_size=bs, shuffle=True, pin_memory=True, num_workers=4)
+        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=False, pin_memory=True, num_workers=4)
 
 
         print("keep_n_samples_per_class...")
