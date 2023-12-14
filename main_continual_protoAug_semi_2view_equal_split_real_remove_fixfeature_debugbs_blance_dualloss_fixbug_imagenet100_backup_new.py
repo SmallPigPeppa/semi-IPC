@@ -160,7 +160,7 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=False)
+        train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=True,num_workers=4)
         dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=4)
 
