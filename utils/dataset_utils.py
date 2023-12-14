@@ -68,7 +68,7 @@ def get_dual_dataset(dataset, data_path):
             transforms.RandomHorizontalFlip(),
             # transforms.Pad(2, padding_mode='reflect'),
             transforms.RandomResizedCrop(224),
-            RandAugmentMC100(n=2, m=10),
+            RandAugmentMC(n=2, m=10),
             transforms.ToTensor(),
             transforms.Normalize(mean, std)])
 
@@ -107,10 +107,10 @@ def get_dataset(dataset, data_path):
             # RandAugmentMC100(n=2, m=10),
             transforms.ToTensor(),
             transforms.Normalize(mean=mean, std=std)])
-        # train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
-        #                                      transform=imagenet_tansforms)
         train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
-                                             transform=strong)
+                                             transform=imagenet_tansforms)
+        # train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
+        #                                      transform=strong)
         test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "val"),
                                             transform=imagenet_tansforms)
 
