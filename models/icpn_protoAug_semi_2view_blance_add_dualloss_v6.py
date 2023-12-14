@@ -54,7 +54,6 @@ class IncrementalCPN(pl.LightningModule):
         logits_v2 = -1. * d_v2
         ce_loss = F.cross_entropy(logits_v2, targets_v2)
 
-
         # pl loss
         x, targets = batch['supervised_loader']
         d = self.forward(x)
@@ -141,9 +140,10 @@ class IncrementalCPN(pl.LightningModule):
         #     pl_loss = 0.
         loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
         loss = pl_loss * self.pl_lambda + ce_loss
-        loss = ce_loss + semi_dual_loss
+        loss = ce_loss + semi_dual_loss + pl_loss * self.pl_lambda
 
-        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss,"semi_dual_loss": semi_dual_loss, "protoAug_loss": protoAug_loss,
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "semi_dual_loss": semi_dual_loss,
+               "protoAug_loss": protoAug_loss,
                "acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
