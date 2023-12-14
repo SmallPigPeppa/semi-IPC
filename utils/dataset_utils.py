@@ -113,24 +113,26 @@ def get_dataset(dataset, data_path):
                                              transform=strong)
         test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "val"),
                                             transform=imagenet_tansforms)
-    elif dataset == "imagenet-subset":
+
+    return train_dataset, test_dataset
+
+def get_std_dataset(dataset, data_path):
+    # assert dataset in ["cifar100", "imagenet100"]
+    if dataset == "cifar100":
+        mean = [0.5071, 0.4867, 0.4408]
+        std = [0.2675, 0.2565, 0.2761]
+        cifar_transforms = transforms.Compose(
+            [transforms.Resize(32), transforms.ToTensor(), transforms.Normalize(mean, std)])
+        train_dataset = torchvision.datasets.CIFAR100(root=data_path, train=True,
+                                                      transform=cifar_transforms,
+                                                      download=True)
+        test_dataset = torchvision.datasets.CIFAR100(root=data_path, train=False,
+                                                     transform=cifar_transforms,
+                                                     download=True)
+    elif dataset == "imagenet100":
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
-        data_path = os.path.join(data_path, "imagenet-subset")
-        imagenet_tansforms = transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std),
-        ])
-        train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
-                                             transform=imagenet_tansforms)
-        test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "val"),
-                                            transform=imagenet_tansforms)
-    elif dataset == "imagenet-subset-new":
-        mean = [0.485, 0.456, 0.406]
-        std = [0.229, 0.224, 0.225]
-        data_path = os.path.join(data_path, "imagenet-subset-new")
+        # data_path = os.path.join(data_path, "imagenet100")
         imagenet_tansforms = transforms.Compose([
             transforms.Resize(256),
             transforms.CenterCrop(224),
@@ -143,6 +145,7 @@ def get_dataset(dataset, data_path):
                                             transform=imagenet_tansforms)
 
     return train_dataset, test_dataset
+
 
 
 def split_dataset(dataset: Dataset, task_idx: List[int], tasks: list = None):

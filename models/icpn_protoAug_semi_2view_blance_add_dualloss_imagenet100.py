@@ -56,8 +56,11 @@ class IncrementalCPN(pl.LightningModule):
         logits = -1. * d
         # ce loss
         ce_loss = F.cross_entropy(logits, targets)
+
+        x_std, targets_std = batch['new_loader_std']
+        d_std = self.forward(x_std)
         # pl loss
-        pl_loss = torch.index_select(d, dim=1, index=targets)
+        pl_loss = torch.index_select(d_std, dim=1, index=targets_std)
         pl_loss = torch.diagonal(pl_loss)
         pl_loss = torch.mean(pl_loss)
         # all loss
@@ -134,8 +137,8 @@ class IncrementalCPN(pl.LightningModule):
 
         # loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
 
-        if ce_loss < 0.2:
-            semi_loss = 0.
+        # if ce_loss < 0.2:
+        #     semi_loss = 0.
         # if pl_loss < 80:
         #     pl_loss = 0.
         # loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
@@ -148,12 +151,12 @@ class IncrementalCPN(pl.LightningModule):
 
         loss = ce_loss + semi_dual_loss
         # pl_loss = 0.
-        semi_loss = 0.
+        # semi_loss = 0.
         # semi_dual_loss = 0.
         protoAug_loss = 0.
         # acc = 0.
         # loss = ce_loss
-        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "semi_dual_loss": semi_dual_loss,
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_dual_loss": semi_dual_loss,
                "protoAug_loss": protoAug_loss,
                "acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}

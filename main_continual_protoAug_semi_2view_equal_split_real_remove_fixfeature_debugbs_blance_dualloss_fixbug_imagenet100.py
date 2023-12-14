@@ -4,7 +4,7 @@ import wandb
 from torch.utils.data import DataLoader
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import seed_everything
-from utils.dataset_utils import get_dataset, get_pretrained_dataset, split_dataset, get_dual_dataset
+from utils.dataset_utils import get_dataset, get_pretrained_dataset, split_dataset, get_dual_dataset,get_std_dataset
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
@@ -193,6 +193,7 @@ def main():
     # tasks = tasks_initial + tasks_incremental
     tasks = classes_order.chunk(args.num_tasks)
     train_dataset, test_dataset = get_dataset(dataset=args.dataset, data_path=args.data_path)
+    train_dataset_std, _ = get_std_dataset(dataset=args.dataset, data_path=args.data_path)
     # train_dataset = keep_n_samples_per_class(train_dataset, n=10)
     dual_dataset = get_dual_dataset(dataset=args.dataset, data_path=args.data_path)
 
@@ -213,6 +214,11 @@ def main():
         print("split_dataset...")
         train_dataset_task = split_dataset(
             train_dataset,
+            tasks=tasks,
+            task_idx=[task_idx],
+        )
+        train_dataset_task_std = split_dataset(
+            train_dataset_std,
             tasks=tasks,
             task_idx=[task_idx],
         )
@@ -238,7 +244,9 @@ def main():
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
         new_dataset = keep_n_samples_per_class(train_dataset_task, n=10)
-        cpn_means = compute_class_means(new_dataset, encoder, batch_size=512)
+        new_dataset_std = keep_n_samples_per_class(train_dataset_task_std, n=10)
+        # cpn_means = compute_class_means(new_dataset, encoder, batch_size=512)
+        cpn_means = compute_class_means(new_dataset_std, encoder, batch_size=512)
         bs=64
         # train_loader = DataLoader(train_dataset_task, batch_size=bs, shuffle=True, pin_memory=True, num_workers=8)
         # dual_loader = DataLoader(dual_dataset_task, batch_size=bs, shuffle=True, pin_memory=True, num_workers=8)
@@ -248,6 +256,7 @@ def main():
         train_loader = DataLoader(train_dataset_task, batch_size=bs, shuffle=True, pin_memory=True, num_workers=4)
         dual_loader = DataLoader(dual_dataset_task, batch_size=bs, shuffle=True, pin_memory=True, num_workers=4)
         new_loader = DataLoader(new_dataset, batch_size=bs, shuffle=True, pin_memory=True, num_workers=4)
+        new_loader_std = DataLoader(new_dataset_std, batch_size=bs, shuffle=True, pin_memory=True, num_workers=4)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=False, pin_memory=True, num_workers=4)
 
 
@@ -261,13 +270,14 @@ def main():
             "supervised_loader": train_loader,
             "dual_loader": dual_loader,
             "new_loader": new_loader,
+            "new_loader_std": new_loader,
         }
 
         if args.cpn_initial == "means":
             model.task_initial(current_tasks=tasks[task_idx], means=cpn_means)
         else:
             model.task_initial(current_tasks=tasks[task_idx])
-        num_gpus = 2
+        num_gpus = 1
         trainer = pl.Trainer(
             accelerator='gpu',
             devices=num_gpus,
