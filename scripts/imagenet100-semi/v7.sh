@@ -17,7 +17,7 @@ CUDA_VISIBLE_DEVICES=7 python main_imagenet100_v7.py \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet100 \
   --pl_lambda 0.2 \
   --project semi-IPC-debug-v9 \
-  --epochs 1 \
+  --epochs 50 \
   --perfix v7-semi-dual- \
   --cpn_initial means
 
