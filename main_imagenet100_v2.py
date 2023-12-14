@@ -4,7 +4,7 @@ import wandb
 from torch.utils.data import DataLoader
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import seed_everything
-from utils.dataset_utils import get_dataset, get_pretrained_dataset, split_dataset, get_dual_dataset
+from utils.dataset_utils_v2 import get_dataset, get_pretrained_dataset, split_dataset, get_dual_dataset,get_dataset_std
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
@@ -116,6 +116,7 @@ def main():
     # tasks = tasks_initial + tasks_incremental
     tasks = classes_order.chunk(args.num_tasks)
     train_dataset, test_dataset = get_dataset(dataset=args.dataset, data_path=args.data_path)
+    train_dataset_std, _ = get_dataset_std(dataset=args.dataset, data_path=args.data_path)
     dual_dataset = get_dual_dataset(dataset=args.dataset, data_path=args.data_path)
 
     for task_idx in range(0, args.num_tasks):
@@ -134,6 +135,11 @@ def main():
         lr_monitor = LearningRateMonitor(logging_interval="epoch")
         train_dataset_task = split_dataset(
             train_dataset,
+            tasks=tasks,
+            task_idx=[task_idx],
+        )
+        train_dataset_task_std = split_dataset(
+            train_dataset_std,
             tasks=tasks,
             task_idx=[task_idx],
         )
@@ -159,9 +165,8 @@ def main():
 
 
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
-        cpn_means = compute_class_means(supervised_data, encoder, batch_size=512)
-        # _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
-        # supervised_data = keep_n_samples_per_class(train_dataset_task, n=10, return_means=False)
+        supervised_data_std = keep_n_samples_per_class(train_dataset_task_std, n=10)
+        cpn_means = compute_class_means(supervised_data_std, encoder, batch_size=512)
         train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
         dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=4)
