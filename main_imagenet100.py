@@ -141,7 +141,7 @@ def compute_class_means(dataset, encoder, batch_size=512):
     device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
 
     # 创建 DataLoader
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, pin_memory=True,num_workers=4)
 
     # 确保编码器处于评估模式
     encoder.eval()

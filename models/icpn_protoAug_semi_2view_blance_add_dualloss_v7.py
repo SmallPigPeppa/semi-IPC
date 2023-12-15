@@ -51,8 +51,8 @@ class IncrementalCPN(pl.LightningModule):
         # ce loss
         x_v2, targets_v2 = batch['supervised_loader_v2']
         d_v2 = self.forward(x_v2)
-        logits_v2 = -1. * d_v2
-        ce_loss = F.cross_entropy(logits_v2, targets_v2)
+        logits = -1. * d_v2
+        ce_loss = F.cross_entropy(logits, targets_v2)
 
         # pl loss
         x, targets = batch['supervised_loader']
@@ -67,38 +67,34 @@ class IncrementalCPN(pl.LightningModule):
         acc = torch.sum(preds == targets) / targets.shape[0]
 
         if self.current_task_idx > 0:
-            old_classes = self.old_classes
-            radius = self.radius
-            prototypes = self.prototypes
-            batch_size = self.semi_batch_size
-            batchsize_new = batch_size // 2
-            batchsize_old = batch_size // 2
-
-            # x_new, y_new = batch["semi_data"]
-            x_new = x[:batchsize_new]
-            y_new = targets[:batchsize_new]
-
-            y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
-            # Convert old_y to Python list
-            y_old_list = y_old.tolist()
-            # Index prototype with old_y_list
-            prototype_old = torch.cat([prototypes[i] for i in y_old_list])
-            x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
-
-            y_all = torch.cat([y_new, y_old], dim=0)
-            x_all = torch.cat([x_new, x_old], dim=0)
-            logits_all = -1. * self.forward(x_all)
-            protoAug_loss = F.cross_entropy(logits_all, y_all)
-            # x_all = x
-            # y_all = targets
+            # old_classes = self.old_classes
+            # radius = self.radius
+            # prototypes = self.prototypes
+            # batch_size = self.semi_batch_size
+            # batchsize_new = batch_size // 2
+            # batchsize_old = batch_size // 2
+            #
+            # # x_new, y_new = batch["semi_data"]
+            # x_new = x[:batchsize_new]
+            # y_new = targets[:batchsize_new]
+            #
+            # y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
+            # # Convert old_y to Python list
+            # y_old_list = y_old.tolist()
+            # # Index prototype with old_y_list
+            # prototype_old = torch.cat([prototypes[i] for i in y_old_list])
+            # x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
+            #
+            # y_all = torch.cat([y_new, y_old], dim=0)
+            # x_all = torch.cat([x_new, x_old], dim=0)
+            x_all = x
+            y_all = targets
         else:
-            # x_all = x
-            # y_all = targets
-            # logits_all = -1. * self.forward(x_all)
-            protoAug_loss = 0.
+            x_all = x
+            y_all = targets
 
-        # logits_all = -1. * self.forward(x_all)
-        # protoAug_loss = F.cross_entropy(logits_all, y_all)
+        logits_all = -1. * self.forward(x_all)
+        protoAug_loss = F.cross_entropy(logits_all, y_all)
 
         # loss = ce_loss + pl_loss * self.pl_lambda + protoAug_loss * self.protoAug_lambda
         # loss = ce_loss + pl_loss * self.pl_lambda
@@ -144,7 +140,7 @@ class IncrementalCPN(pl.LightningModule):
         #     pl_loss = 0.
         loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
         loss = pl_loss * self.pl_lambda + ce_loss
-        loss = ce_loss + semi_dual_loss + pl_loss * self.pl_lambda + protoAug_loss
+        loss = ce_loss + semi_dual_loss + pl_loss * self.pl_lambda
 
         out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "semi_dual_loss": semi_dual_loss,
                "protoAug_loss": protoAug_loss,

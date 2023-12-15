@@ -8,7 +8,7 @@ from utils.dataset_utils_v2 import get_dataset, get_pretrained_dataset, split_da
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
-from models.icpn_protoAug_semi_2view_blance_add_dualloss_v3 import IncrementalCPN
+from models.icpn_protoAug_semi_2view_blance_add_dualloss_v8 import IncrementalCPN
 from collections import defaultdict
 import random
 from torch.utils.data import Subset,Dataset
@@ -65,7 +65,7 @@ def compute_class_means(dataset, encoder, batch_size=512):
     device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
 
     # 创建 DataLoader
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, pin_memory=True,num_workers=4)
 
     # 确保编码器处于评估模式
     encoder.eval()
@@ -199,10 +199,10 @@ def main():
         )
         model.train_loaders = train_loaders
         model.encoder = encoder
-        # model.protoAug_start()
+        model.protoAug_start()
         trainer.fit(model, train_loaders, test_loader)
         wandb.finish()
-        # model.protoAug_end()
+        model.protoAug_end()
 
 
 if __name__ == '__main__':
