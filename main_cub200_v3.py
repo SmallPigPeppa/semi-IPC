@@ -6,7 +6,7 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import seed_everything
 from utils.dataset_utils_v2 import get_dataset, get_pretrained_dataset, split_dataset, get_dual_dataset, get_dataset_std
 from pytorch_lightning.callbacks import LearningRateMonitor
-from utils.encoder_utils import get_pretrained_encoder
+from utils.encoder_utils import get_pretrained_encoder2 as get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
 from models.icpn_protoAug_semi_2view_blance_add_dualloss_v3_cub import IncrementalCPN
 from collections import defaultdict
