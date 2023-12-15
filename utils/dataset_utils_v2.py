@@ -111,6 +111,9 @@ def get_dataset(dataset, data_path):
                                              transform=strong)
         test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "val"),
                                             transform=imagenet_tansforms)
+        if dataset=="cub200":
+            test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "test"),
+                                                transform=imagenet_tansforms)
 
     return train_dataset, test_dataset
 
@@ -142,6 +145,9 @@ def get_dataset_std(dataset, data_path):
                                              transform=imagenet_tansforms)
         test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "val"),
                                             transform=imagenet_tansforms)
+        if dataset=="cub200":
+            test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "test"),
+                                                transform=imagenet_tansforms)
 
     return train_dataset, test_dataset
 
