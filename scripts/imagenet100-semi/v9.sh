@@ -9,7 +9,7 @@
 #    --project semi-IPC
 #done
 
-CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v6.py \
+CUDA_VISIBLE_DEVICES=4 python main_imagenet100_v9.py \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
@@ -18,7 +18,7 @@ CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v6.py \
   --pl_lambda 0.2 \
   --project semi-IPC-debug-v9 \
   --epochs 50 \
-  --perfix v6-semi-dual- \
+  --perfix v9-semi-dual- \
   --cpn_initial means
 
 
