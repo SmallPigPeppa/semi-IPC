@@ -51,8 +51,8 @@ class IncrementalCPN(pl.LightningModule):
         # ce loss
         x_v2, targets_v2 = batch['supervised_loader_v2']
         d_v2 = self.forward(x_v2)
-        logits_v2 = -1. * d_v2
-        ce_loss = F.cross_entropy(logits_v2, targets_v2)
+        logits = -1. * d_v2
+        ce_loss = F.cross_entropy(logits, targets_v2)
 
 
         # pl loss

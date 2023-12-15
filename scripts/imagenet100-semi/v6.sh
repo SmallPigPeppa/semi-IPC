@@ -9,7 +9,7 @@
 #    --project semi-IPC
 #done
 
-CUDA_VISIBLE_DEVICES=6 python main_imagenet100_v6.py \
+CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v6.py \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
