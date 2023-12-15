@@ -38,9 +38,9 @@ class IncrementalCPN(pl.LightningModule):
         return [optimizer], [scheduler]
 
     def forward(self, x):
-        self.encoder.eval()
-        with torch.no_grad():
-            x = self.encoder(x)
+        # self.encoder.eval()
+        # with torch.no_grad():
+        x = self.encoder(x)
         x = x.reshape(-1, 1, self.dim_feature)
         prototypes_list = [i for i in self.prototypes]
         d = torch.pow(x - torch.cat(prototypes_list), 2)
