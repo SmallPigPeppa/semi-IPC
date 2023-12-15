@@ -53,20 +53,18 @@ def get_dual_dataset(dataset, data_path):
         dual_dataset = DualTransformDataset(train_dataset, weak, strong)
         return dual_dataset
 
-    elif dataset == "imagenet100":
+    elif dataset in ["imagenet100", "cub200"]:
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
         train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
                                              transform=None)
         weak = transforms.Compose([
             transforms.RandomHorizontalFlip(),
-            # transforms.Pad(2, padding_mode='reflect'),
             transforms.RandomResizedCrop(224),
             transforms.ToTensor(),
             transforms.Normalize(mean, std)])
         strong = transforms.Compose([
             transforms.RandomHorizontalFlip(),
-            # transforms.Pad(2, padding_mode='reflect'),
             transforms.RandomResizedCrop(224),
             RandAugmentMC(n=2, m=10),
             transforms.ToTensor(),
@@ -89,7 +87,7 @@ def get_dataset(dataset, data_path):
         test_dataset = torchvision.datasets.CIFAR100(root=data_path, train=False,
                                                      transform=cifar_transforms,
                                                      download=True)
-    elif dataset == "imagenet100":
+    elif dataset in ["imagenet100", "cub200"]:
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
         # data_path = os.path.join(data_path, "imagenet100")
@@ -116,6 +114,7 @@ def get_dataset(dataset, data_path):
 
     return train_dataset, test_dataset
 
+
 def get_dataset_std(dataset, data_path):
     # assert dataset in ["cifar100", "imagenet100"]
     if dataset == "cifar100":
@@ -129,7 +128,7 @@ def get_dataset_std(dataset, data_path):
         test_dataset = torchvision.datasets.CIFAR100(root=data_path, train=False,
                                                      transform=cifar_transforms,
                                                      download=True)
-    elif dataset == "imagenet100":
+    elif dataset in ["imagenet100", "cub200"]:
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
         # data_path = os.path.join(data_path, "imagenet100")
@@ -145,7 +144,6 @@ def get_dataset_std(dataset, data_path):
                                             transform=imagenet_tansforms)
 
     return train_dataset, test_dataset
-
 
 
 def split_dataset(dataset: Dataset, task_idx: List[int], tasks: list = None):
