@@ -9,7 +9,7 @@
 #    --project semi-IPC
 #done
 
-CUDA_VISIBLE_DEVICES=4 python main_cub200_v3.py \
+CUDA_VISIBLE_DEVICES=5 python main_cub200_v3.py \
   --num_classes 200 \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
