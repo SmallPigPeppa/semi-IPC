@@ -204,6 +204,9 @@ def main():
         trainer.fit(model, train_loaders, test_loader)
         wandb.finish()
         # model.protoAug_end()
+        model_save_path = 'cub200-resnet50.pth'
+        torch.save(encoder.state_dict(), model_save_path)
+        print(f'Model saved to {model_save_path}')
 
 
 if __name__ == '__main__':
