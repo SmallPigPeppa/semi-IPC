@@ -119,7 +119,7 @@ def main():
     # classes_order = torch.tensor(list(range(args.num_classes)))
     # tasks = classes_order.chunk(args.num_tasks)
     tasks_initial = classes_order[:int(args.num_classes / 2)].chunk(1)
-    tasks_incremental = classes_order[int(args.num_classes / 2):args.num_classes].chunk(args.num_tasks)
+    tasks_incremental = classes_order[int(args.num_classes / 2):args.num_classes].chunk(args.num_tasks - 1)
     tasks = tasks_initial + tasks_incremental
 
     train_dataset, test_dataset = get_dataset(dataset=args.dataset, data_path=args.data_path)
