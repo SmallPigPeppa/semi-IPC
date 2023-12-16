@@ -20,6 +20,7 @@ class IncrementalCPN(pl.LightningModule):
             [nn.Parameter(torch.randn(1, self.dim_feature)) for i in range(num_classes)])
 
         self.protoAug_lambda = 1.0
+        self.dual_lambda = 1.0
 
     def task_initial(self, current_tasks, means=None):
         if means is not None:
@@ -139,10 +140,12 @@ class IncrementalCPN(pl.LightningModule):
         #     pl_loss = 0.
         # loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
         # loss = pl_loss * self.pl_lambda + ce_loss
-        loss = ce_loss + semi_dual_loss + pl_loss * self.pl_lambda
+        # loss = ce_loss + semi_dual_loss + pl_loss * self.pl_lambda
+        loss = ce_loss + semi_dual_loss * self.dual_lambda + pl_loss * self.pl_lambda
         # loss = ce_loss  + pl_loss * self.pl_lambda
 
-        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss,"semi_dual_loss": semi_dual_loss, "protoAug_loss": protoAug_loss,
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "semi_dual_loss": semi_dual_loss,
+               "protoAug_loss": protoAug_loss,
                "acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)

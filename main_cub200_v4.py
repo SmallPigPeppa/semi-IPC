@@ -169,9 +169,14 @@ def main():
 
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
-
-        supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
-        supervised_data_std = keep_n_samples_per_class(train_dataset_task_std, n=10)
+        if task_idx == 0:
+            supervised_data = keep_n_samples_per_class(train_dataset_task, n=30)
+            supervised_data_std = keep_n_samples_per_class(train_dataset_task_std, n=30)
+            model.dual_lambda = 0.
+        else:
+            supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
+            supervised_data_std = keep_n_samples_per_class(train_dataset_task_std, n=10)
+            model.dual_lambda = 1.0
         cpn_means = compute_class_means(supervised_data_std, encoder, batch_size=512)
         train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
         dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
