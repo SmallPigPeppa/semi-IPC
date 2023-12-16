@@ -12,7 +12,7 @@
 CUDA_VISIBLE_DEVICES=0 python main_cub200_v3.py \
   --num_classes 200 \
   --num_tasks 5 \
-  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/test-code/semi-IPC-v9/cub200-resnet50.pth \
+  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/test-code/semi-IPC-v9/cub200-resnet50.ckpt \
   --pretrained_method byol \
   --dataset cub200 \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/cub200 \
