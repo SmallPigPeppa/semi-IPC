@@ -20,7 +20,7 @@ CUDA_VISIBLE_DEVICES=0 python main_cub200_v4_pretrain.py \
   --pl_lambda 0.2 \
   --project semi-IPC-debug-v9 \
   --epochs 50 \
-  --perfix v3-pretrain-semi-dual- \
+  --perfix v4-pretrain-semi-dual- \
   --cpn_initial means
 
 
