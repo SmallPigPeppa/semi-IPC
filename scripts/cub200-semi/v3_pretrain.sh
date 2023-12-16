@@ -8,11 +8,12 @@
 #    --pl_lambda $lambda \
 #    --project semi-IPC
 #done
+#  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/test-code/semi-IPC-v9/cub200-resnet50.pth \
 #  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
 CUDA_VISIBLE_DEVICES=0 python main_cub200_v3_pretrain.py \
   --num_classes 200 \
   --num_tasks 1 \
-  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/test-code/semi-IPC-v9/cub200-resnet50.pth \
+  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
   --dataset cub200 \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/cub200 \
