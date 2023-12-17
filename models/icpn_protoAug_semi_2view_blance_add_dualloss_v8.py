@@ -198,6 +198,7 @@ class IncrementalCPN(pl.LightningModule):
         self.encoder.eval()
 
         for x, targets in tqdm(self.train_loaders['supervised_loader_std']):
+            print('self.device:',self.device)
             targets = targets.to(self.device)
             inputs = x.to(self.device)
             for class_id in self.new_classes:
