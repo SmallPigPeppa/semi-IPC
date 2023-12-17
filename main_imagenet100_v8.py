@@ -4,14 +4,14 @@ import wandb
 from torch.utils.data import DataLoader
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import seed_everything
-from utils.dataset_utils_v2 import get_dataset, get_pretrained_dataset, split_dataset, get_dual_dataset,get_dataset_std
+from utils.dataset_utils_v2 import get_dataset, get_pretrained_dataset, split_dataset, get_dual_dataset, get_dataset_std
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
 from models.icpn_protoAug_semi_2view_blance_add_dualloss_v8 import IncrementalCPN
 from collections import defaultdict
 import random
-from torch.utils.data import Subset,Dataset
+from torch.utils.data import Subset, Dataset
 from tqdm import tqdm
 
 
@@ -65,7 +65,7 @@ def compute_class_means(dataset, encoder, batch_size=512):
     device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
 
     # 创建 DataLoader
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, pin_memory=True,num_workers=4)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, pin_memory=True, num_workers=4)
 
     # 确保编码器处于评估模式
     encoder.eval()
@@ -163,7 +163,6 @@ def main():
         # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True)
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
-
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
         supervised_data_std = keep_n_samples_per_class(train_dataset_task_std, n=10)
         cpn_means = compute_class_means(supervised_data_std, encoder, batch_size=512)
@@ -171,7 +170,8 @@ def main():
         dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=4)
         supervised_loader = DataLoader(supervised_data, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
-        supervised_loader_std = DataLoader(supervised_data_std, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
+        supervised_loader_std = DataLoader(supervised_data_std, batch_size=256, shuffle=True, pin_memory=True,num_workers=4)
+        model.batch_size = 256
 
         train_loaders = {
             "unsupervised_loader": train_loader,
