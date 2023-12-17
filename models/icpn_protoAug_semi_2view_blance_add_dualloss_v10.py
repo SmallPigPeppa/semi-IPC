@@ -59,39 +59,12 @@ class IncrementalCPN(pl.LightningModule):
         pl_loss = torch.index_select(d_std, dim=1, index=targets_std)
         pl_loss = torch.diagonal(pl_loss)
         pl_loss = torch.mean(pl_loss)
-        # all loss
-        # loss = ce_loss + pl_loss * self.pl_lambda
+
         # acc
         preds = torch.argmax(logits, dim=1)
         acc = torch.sum(preds == targets) / targets.shape[0]
-
-        if self.current_task_idx > 0:
-            # old_classes = self.old_classes
-            # radius = self.radius
-            # prototypes = self.prototypes
-            # batch_size = self.semi_batch_size
-            # batchsize_new = batch_size // 2
-            # batchsize_old = batch_size // 2
-            #
-            # # x_new, y_new = batch["semi_data"]
-            # x_new = x[:batchsize_new]
-            # y_new = targets[:batchsize_new]
-            #
-            # y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
-            # # Convert old_y to Python list
-            # y_old_list = y_old.tolist()
-            # # Index prototype with old_y_list
-            # prototype_old = torch.cat([prototypes[i] for i in y_old_list])
-            # x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
-            #
-            # y_all = torch.cat([y_new, y_old], dim=0)
-            # x_all = torch.cat([x_new, x_old], dim=0)
-            x_all = x
-            y_all = targets
-        else:
-            x_all = x
-            y_all = targets
-
+        x_all = x
+        y_all = targets
         logits_all = -1. * self.forward(x_all)
         protoAug_loss = F.cross_entropy(logits_all, y_all)
 
@@ -141,119 +114,14 @@ class IncrementalCPN(pl.LightningModule):
         # loss = pl_loss * self.pl_lambda + ce_loss
         loss = ce_loss + semi_dual_loss + pl_loss * self.pl_lambda
 
-        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss,"semi_dual_loss": semi_dual_loss, "protoAug_loss": protoAug_loss,
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "semi_dual_loss": semi_dual_loss,
+               "protoAug_loss": protoAug_loss,
                "acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
 
-    # def training_step(self, batch, batch_idx):
-    #     x, targets = batch['supervised_loader']
-    #     d = self.forward(x)
-    #     logits = -1. * d
-    #     # ce loss
-    #     ce_loss = F.cross_entropy(logits, targets)
-    #     # pl loss
-    #     pl_loss = torch.index_select(d, dim=1, index=targets)
-    #     pl_loss = torch.diagonal(pl_loss)
-    #     pl_loss = torch.mean(pl_loss)
-    #     # all loss
-    #     # loss = ce_loss + pl_loss * self.pl_lambda
-    #     # acc
-    #     preds = torch.argmax(logits, dim=1)
-    #     acc = torch.sum(preds == targets) / targets.shape[0]
-    #
-    #     if self.current_task_idx > 0:
-    #         old_classes = self.old_classes
-    #         radius = self.radius
-    #         prototypes = self.prototypes
-    #         batch_size = self.semi_batch_size
-    #         batchsize_new = batch_size // 2
-    #         batchsize_old = batch_size // 2
-    #
-    #         # x_new, y_new = batch["semi_data"]
-    #         x_new = x[:batchsize_new]
-    #         y_new = targets[:batchsize_new]
-    #
-    #         y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
-    #         # Convert old_y to Python list
-    #         y_old_list = y_old.tolist()
-    #         # Index prototype with old_y_list
-    #         prototype_old = torch.cat([prototypes[i] for i in y_old_list])
-    #         x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
-    #
-    #         y_all = torch.cat([y_new, y_old], dim=0)
-    #         x_all = torch.cat([x_new, x_old], dim=0)
-    #     else:
-    #         x_all = x
-    #         y_all = targets
-    #
-    #     logits_all = -1. * self.forward(x_all)
-    #     protoAug_loss = F.cross_entropy(logits_all, y_all)
-    #
-    #     # loss = ce_loss + pl_loss * self.pl_lambda + protoAug_loss * self.protoAug_lambda
-    #     # loss = ce_loss + pl_loss * self.pl_lambda
-    #
-    #     # unlabel data
-    #     batchsize_label = 8
-    #     batchsize_unlabel = 56
-    #
-    #     x_unlabel, targets_unlabel = batch['unsupervised_loader']
-    #     d_unlable = self(x_unlabel)
-    #     logits_unlabel = -1. * d_unlable
-    #     probabilities_unlabel = F.softmax(logits_unlabel, dim=1)
-    #     _, max_logits_unlabel = torch.max(logits_unlabel, dim=1)
-    #     _, max_probabilities_unlabel = torch.max(probabilities_unlabel, dim=1)
-    #     # mask = logits_unlabel[torch.arange(logits_unlabel.shape[0]), max_logits_unlabel] > 0.75
-    #     mask = probabilities_unlabel[torch.arange(probabilities_unlabel.shape[0]), max_probabilities_unlabel] > 0.99
-    #
-    #     # import pdb;pdb.set_trace()
-    #
-    #     x_unlabel_high_conf = x_unlabel[mask]
-    #     target_unlabel_high_conf = max_logits_unlabel[mask]
-    #     target_unlabel_high_conf_2 = targets_unlabel[mask]
-    #     # target_unlabel_high_conf = targets_unlabel[mask]
-    #     d_unlabel_high_conf = d_unlable[mask]
-    #
-    #     # import pdb;pdb.set_trace()
-    #
-    #     semi_x_all = torch.cat([x[:batchsize_label], x_unlabel_high_conf[:batchsize_unlabel]])
-    #     semi_target_all = torch.cat([targets[:batchsize_label], target_unlabel_high_conf[:batchsize_unlabel]])
-    #     semi_d_all = torch.cat([d[:batchsize_label], d_unlabel_high_conf[:batchsize_unlabel]])
-    #     semi_loss = F.cross_entropy(-1. * self(semi_x_all), semi_target_all)
-    #
-    #     # loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
-    #
-    #     # if semi_loss < 0.2:
-    #     #     semi_loss = 0.
-    #     # if pl_loss < 80:
-    #     #     pl_loss = 0.
-    #
-    #     # d = self.forward(x)
-    #     # logits = -1. * d
-    #     # # ce loss
-    #     # ce_loss = F.cross_entropy(logits, targets)
-    #     # pl loss
-    #     pl_loss = torch.index_select(semi_d_all, dim=1, index=semi_target_all)
-    #     pl_loss = torch.diagonal(pl_loss)
-    #     pl_loss = torch.mean(pl_loss)
-    #
-    #     logits_all = -1.0 * self(x_unlabel)
-    #     # all loss
-    #     # loss = ce_loss + pl_loss * self.pl_lambda
-    #     # acc
-    #     preds_all = torch.argmax(logits_all, dim=1)
-    #     acc = torch.sum(preds_all == targets_unlabel) / targets_unlabel.shape[0]
-    #
-    #     loss = pl_loss * self.pl_lambda + semi_loss
-    #
-    #     out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "protoAug_loss": protoAug_loss,
-    #            "acc": acc, "loss": loss}
-    #     log_dict = {"train_" + k: v for k, v in out.items()}
-    #     self.log_dict(log_dict, on_epoch=True, sync_dist=True)
-    #     return out
-
-    def validation_step(self, batch, batch_idx):
+    def validation_step_old(self, batch, batch_idx):
         x, targets = batch
         d = self.forward(x)
         logits = -1. * d
@@ -269,35 +137,7 @@ class IncrementalCPN(pl.LightningModule):
         preds = torch.argmax(logits, dim=1)
         acc = torch.sum(preds == targets) / targets.shape[0]
 
-        if self.current_task_idx > 0:
-            x_all = x
-            y_all = targets
-            # old_classes = self.old_classes
-            # radius = self.radius
-            # prototypes = self.prototypes
-            # batch_size = self.semi_batch_size
-            # batchsize_new = batch_size // 2
-            # batchsize_old = batch_size // 2
-            #
-            # # x_new, y_new = batch["semi_data"]
-            # x_new = x[:batchsize_new]
-            # y_new = targets[:batchsize_new]
-            #
-            # y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
-            # # Convert old_y to Python list
-            # y_old_list = y_old.tolist()
-            # # Index prototype with old_y_list
-            # prototype_old = torch.cat([prototypes[i] for i in y_old_list])
-            # x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
-            #
-            # y_all = torch.cat([y_new, y_old], dim=0)
-            # x_all = torch.cat([x_new, x_old], dim=0)
-        else:
-            x_all = x
-            y_all = targets
-
-        logits_all = -1. * self.forward(x_all)
-        protoAug_loss = F.cross_entropy(logits_all, y_all)
+        protoAug_loss = 0.
 
         # loss = ce_loss + pl_loss * self.pl_lambda + protoAug_loss * self.protoAug_lambda
 
@@ -308,6 +148,52 @@ class IncrementalCPN(pl.LightningModule):
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
 
+    def validation_step(self, batch, batch_idx):
+        x, targets = batch
+        d = self.forward(x)
+        logits = -1. * d
+        # ce loss
+        ce_loss = F.cross_entropy(logits, targets)
+        # pl loss
+        pl_loss = torch.index_select(d, dim=1, index=targets)
+        pl_loss = torch.diagonal(pl_loss)
+        pl_loss = torch.mean(pl_loss)
+
+        # preds
+        preds = torch.argmax(logits, dim=1)
+
+        # acc all
+        acc = torch.sum(preds == targets) / targets.shape[0]
+
+        # 初始化准确率字典
+        task_accuracies = {}
+
+        # 对于当前任务及之前的任务，计算准确率
+        for past_task_idx in range(self.current_task_idx + 1):
+            task_classes = self.tasks[past_task_idx]
+            task_mask = torch.isin(targets, task_classes)
+
+            if task_mask.any():
+                task_targets = targets[task_mask]
+                task_preds = preds[task_mask]
+                task_acc = torch.sum(task_preds == task_targets).float() / task_targets.shape[0]
+                task_accuracies[f"task_{past_task_idx}_acc"] = task_acc
+            else:
+                task_accuracies[f"task_{past_task_idx}_acc"] = torch.tensor(0.)
+
+        # all loss
+        loss = ce_loss + pl_loss * self.pl_lambda
+
+        protoAug_loss = 0.
+
+        # 汇总输出
+        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, 'protoAug_loss': protoAug_loss, "loss": loss, "acc": acc}
+        out.update(task_accuracies)
+
+        # 日志
+        log_dict = {"val_" + k: v for k, v in out.items()}
+        self.log_dict(log_dict, on_epoch=True, sync_dist=True)
+        return out
 
     def protoAug_start(self):
         # self.radius = 0.1
