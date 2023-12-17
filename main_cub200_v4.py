@@ -179,12 +179,17 @@ def main():
             model.dual_lambda = 1.0
 
         cpn_means = compute_class_means(supervised_data_std, encoder, batch_size=512)
-        train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
-        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
-        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
-        supervised_loader_std = DataLoader(supervised_data_std, batch_size=64, shuffle=True, pin_memory=True,
-                                           num_workers=2)
+        # train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
+        # dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
+        # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
+        # supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
+        # supervised_loader_std = DataLoader(supervised_data_std, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
+
+        train_loader = DataLoader(train_dataset_task, batch_size=64, shuffle=True, pin_memory=True)
+        dual_loader = DataLoader(dual_dataset_task, batch_size=64, shuffle=True, pin_memory=True)
+        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True,)
+        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True, pin_memory=True)
+        supervised_loader_std = DataLoader(supervised_data_std, batch_size=64, shuffle=True, pin_memory=True)
 
         train_loaders = {
             "unsupervised_loader": train_loader,
