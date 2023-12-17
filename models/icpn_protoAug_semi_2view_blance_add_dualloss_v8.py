@@ -101,7 +101,6 @@ class IncrementalCPN(pl.LightningModule):
         target_weak_high_conf = max_logits_weak[mask]
         semi_dual_loss = F.cross_entropy(-1. * self(x_strong_high_conf), target_weak_high_conf)
 
-
         loss = ce_loss + semi_dual_loss + pl_loss * self.pl_lambda + protoAug_loss
 
         out = {"ce_loss": ce_loss,
@@ -196,6 +195,8 @@ class IncrementalCPN(pl.LightningModule):
         class_means = {}
         class_features = {}
         self.eval()
+        self.encoder.eval()
+
         for x, targets in self.train_loaders['supervised_loader_std']:
             targets = targets.to(self.device)
             inputs = x.to(self.device)
@@ -205,7 +206,8 @@ class IncrementalCPN(pl.LightningModule):
                     continue
                 class_id = class_id.item()
                 indices = (targets == class_id)
-                features = inputs[indices]
+                with torch.no_grad():
+                    features = self.encoder(inputs[indices])
                 # If class_id is encountered for the first time, initialize mean and features list
                 if class_id not in class_means:
                     class_means[class_id] = features.mean(dim=0, keepdim=True)
@@ -224,7 +226,7 @@ class IncrementalCPN(pl.LightningModule):
                 # Here, replace the class_means with self.prototypes[class_id]
                 features = features - class_means[class_id]
                 # features = features - self.prototypes[class_id]
-                import pdb;pdb.set_trace()
+                import pdb; pdb.set_trace()
                 cov = torch.matmul(features.t(), features) / features.shape[0]
                 radius = torch.trace(cov) / features.shape[1]
                 radii.append(radius)
