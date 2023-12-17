@@ -195,12 +195,12 @@ class IncrementalCPN(pl.LightningModule):
         class_means = {}
         class_features = {}
         self.eval()
-        self.encoder.eval()
+        self.encoder.eval().cuda()
 
         for x, targets in tqdm(self.train_loaders['supervised_loader_std']):
             print('self.device:',self.device)
-            targets = targets.to(self.device)
-            inputs = x.to(self.device)
+            targets = targets.cuda()
+            inputs = x.cuda()
             for class_id in self.new_classes:
                 # Skip if the class_id is not in targets
                 if not (targets == class_id).any():
