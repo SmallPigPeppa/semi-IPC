@@ -44,6 +44,13 @@ class IncrementalCPN(pl.LightningModule):
             x = self.encoder(x)
         return x
 
+    def distance_forward(self, x):
+        x = x.reshape(-1, 1, self.dim_feature)
+        prototypes_list = [i for i in self.prototypes]
+        d = torch.pow(x - torch.cat(prototypes_list), 2)
+        d = torch.sum(d, dim=2)
+        return d
+
     def forward(self, x):
         self.encoder.eval()
         with torch.no_grad():
@@ -94,7 +101,7 @@ class IncrementalCPN(pl.LightningModule):
 
             y_all = torch.cat([y_new, y_old], dim=0)
             x_all = torch.cat([x_new, x_old], dim=0)
-            logits_all = -1. * self.forward(x_all)
+            logits_all = -1. * self.distance_forward(x_all)
             protoAug_loss = F.cross_entropy(logits_all, y_all)
         else:
             protoAug_loss = 0.
