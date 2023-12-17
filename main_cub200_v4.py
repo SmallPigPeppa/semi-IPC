@@ -184,7 +184,7 @@ def main():
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
         supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True, pin_memory=True, num_workers=2)
         supervised_loader_std = DataLoader(supervised_data_std, batch_size=64, shuffle=True, pin_memory=True,
-                                           num_workers=4)
+                                           num_workers=2)
 
         train_loaders = {
             "unsupervised_loader": train_loader,
