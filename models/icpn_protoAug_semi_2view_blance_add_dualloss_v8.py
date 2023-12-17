@@ -38,6 +38,12 @@ class IncrementalCPN(pl.LightningModule):
                                                   max_epochs=self.epochs)
         return [optimizer], [scheduler]
 
+    def encoder_forward(self, x):
+        self.encoder.eval()
+        with torch.no_grad():
+            x = self.encoder(x)
+        return x
+
     def forward(self, x):
         self.encoder.eval()
         with torch.no_grad():
@@ -76,6 +82,7 @@ class IncrementalCPN(pl.LightningModule):
 
             # x_new, y_new = batch["semi_data"]
             x_new = x_std[:batchsize_new]
+            x_new = self.encoder_forward(x_new)
             y_new = targets_std[:batchsize_new]
 
             y_old = torch.tensor(random.choices(old_classes, k=batch_size))[:batchsize_old].to(self.device)
@@ -86,7 +93,8 @@ class IncrementalCPN(pl.LightningModule):
             x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
 
             y_all = torch.cat([y_new, y_old], dim=0)
-            import pdb;pdb.set_trace()
+            import pdb;
+            pdb.set_trace()
             x_all = torch.cat([x_new, x_old], dim=0)
             logits_all = -1. * self.forward(x_all)
             protoAug_loss = F.cross_entropy(logits_all, y_all)
@@ -209,8 +217,7 @@ class IncrementalCPN(pl.LightningModule):
                     continue
                 class_id = class_id.item()
                 indices = (targets == class_id)
-                with torch.no_grad():
-                    features = self.encoder(inputs[indices])
+                features = self.encoder_forward(inputs[indices])
                 # If class_id is encountered for the first time, initialize mean and features list
                 if class_id not in class_means:
                     class_means[class_id] = features.mean(dim=0, keepdim=True)
