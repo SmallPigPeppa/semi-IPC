@@ -200,7 +200,7 @@ class IncrementalCPN(pl.LightningModule):
         self.eval()
         self.encoder.eval().cuda()
 
-        for x, targets in tqdm(self.train_loaders['supervised_loader_std']):
+        for x, targets in tqdm(self.train_loaders['supervised_loader_std'], desc="compute radius"):
             # print('self.device:',self.device)
             targets = targets.cuda()
             inputs = x.cuda()
