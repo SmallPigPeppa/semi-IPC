@@ -198,7 +198,7 @@ class IncrementalCPN(pl.LightningModule):
         self.encoder.eval().cuda()
 
         for x, targets in tqdm(self.train_loaders['supervised_loader_std']):
-            print('self.device:',self.device)
+            # print('self.device:',self.device)
             targets = targets.cuda()
             inputs = x.cuda()
             for class_id in self.new_classes:
@@ -227,7 +227,7 @@ class IncrementalCPN(pl.LightningModule):
                 # Here, replace the class_means with self.prototypes[class_id]
                 features = features - class_means[class_id]
                 # features = features - self.prototypes[class_id]
-                import pdb; pdb.set_trace()
+                # import pdb; pdb.set_trace()
                 cov = torch.matmul(features.t(), features) / features.shape[0]
                 radius = torch.trace(cov) / features.shape[1]
                 radii.append(radius)
