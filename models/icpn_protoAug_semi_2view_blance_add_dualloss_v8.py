@@ -4,7 +4,7 @@ import pytorch_lightning as pl
 from torch import nn
 from torch.nn import functional as F
 from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
-
+from tqdm import tqdm
 
 class IncrementalCPN(pl.LightningModule):
     def __init__(self, dim_feature, num_classes, pl_lambda, lr, epochs, warmup_epochs, **kwargs):
@@ -197,7 +197,7 @@ class IncrementalCPN(pl.LightningModule):
         self.eval()
         self.encoder.eval()
 
-        for x, targets in self.train_loaders['supervised_loader_std']:
+        for x, targets in tqdm(self.train_loaders['supervised_loader_std']):
             targets = targets.to(self.device)
             inputs = x.to(self.device)
             for class_id in self.new_classes:
