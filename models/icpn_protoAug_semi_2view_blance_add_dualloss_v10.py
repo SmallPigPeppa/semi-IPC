@@ -170,7 +170,7 @@ class IncrementalCPN(pl.LightningModule):
 
         # 对于当前任务及之前的任务，计算准确率
         for past_task_idx in range(self.current_task_idx + 1):
-            task_classes = self.tasks[past_task_idx]
+            task_classes = self.tasks[past_task_idx].to(self.device)
             task_mask = torch.isin(targets, task_classes)
 
             if task_mask.any():
