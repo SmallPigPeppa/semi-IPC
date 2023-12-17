@@ -86,6 +86,7 @@ class IncrementalCPN(pl.LightningModule):
             x_old = prototype_old + torch.randn(batchsize_old, self.dim_feature).to(self.device) * radius
 
             y_all = torch.cat([y_new, y_old], dim=0)
+            import pdb;pdb.set_trace()
             x_all = torch.cat([x_new, x_old], dim=0)
             logits_all = -1. * self.forward(x_all)
             protoAug_loss = F.cross_entropy(logits_all, y_all)
