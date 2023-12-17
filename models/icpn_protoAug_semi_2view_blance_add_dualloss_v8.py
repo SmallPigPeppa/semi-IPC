@@ -6,6 +6,7 @@ from torch.nn import functional as F
 from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 from tqdm import tqdm
 
+
 class IncrementalCPN(pl.LightningModule):
     def __init__(self, dim_feature, num_classes, pl_lambda, lr, epochs, warmup_epochs, **kwargs):
         super(IncrementalCPN, self).__init__()
@@ -70,6 +71,8 @@ class IncrementalCPN(pl.LightningModule):
             radius = self.radius
             prototypes = self.prototypes
             batch_size = self.batch_size
+            a = self.train_dataloader()
+            print(a)
             batchsize_new = batch_size // 2
             batchsize_old = batch_size // 2
 
