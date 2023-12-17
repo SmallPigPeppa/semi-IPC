@@ -71,8 +71,6 @@ class IncrementalCPN(pl.LightningModule):
             radius = self.radius
             prototypes = self.prototypes
             batch_size = self.batch_size
-            a = self.train_dataloader()
-            print(a)
             batchsize_new = batch_size // 2
             batchsize_old = batch_size // 2
 
