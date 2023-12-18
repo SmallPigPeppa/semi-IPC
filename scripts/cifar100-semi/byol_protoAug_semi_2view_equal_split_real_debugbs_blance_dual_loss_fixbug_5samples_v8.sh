@@ -25,7 +25,7 @@
 
 
 CUDA_VISIBLE_DEVICES=0 python main_continual_protoAug_semi_2view_equal_split_real_remove_fixfeature_debugbs_blance_dualloss_fixbug_5samples_v8.py \
-  --num_tasks 10 \
+  --num_tasks 9 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
   --pretrained_method byol \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \

@@ -67,10 +67,10 @@ def main():
          63, 75, 5, 32, 4, 51, 48, 73, 93, 39, 67, 29, 49, 57, 33])
     # classes_order = torch.randperm(num_classes)
     # classes_order = torch.tensor(list(range(args.num_classes)))
-    # tasks_initial = classes_order[:int(args.num_classes / 2)].chunk(1)
-    # tasks_incremental = classes_order[int(args.num_classes / 2):args.num_classes].chunk(args.num_tasks)
-    # tasks = tasks_initial + tasks_incremental
-    tasks = classes_order.chunk(args.num_tasks)
+    tasks_initial = classes_order[:60].chunk(1)
+    tasks_incremental = classes_order[60:args.num_classes].chunk(args.num_tasks - 1)
+    tasks = tasks_initial + tasks_incremental
+    # tasks = classes_order.chunk(args.num_tasks)
     train_dataset, test_dataset = get_dataset(dataset=args.dataset, data_path=args.data_path)
     dual_dataset = get_dual_dataset(dataset=args.dataset, data_path=args.data_path)
 
@@ -96,7 +96,7 @@ def main():
         test_dataset_task = split_dataset(
             test_dataset,
             tasks=tasks,
-            task_idx=list(range(task_idx+1)),
+            task_idx=list(range(task_idx + 1)),
         )
         dual_dataset_task = split_dataset(
             dual_dataset,
