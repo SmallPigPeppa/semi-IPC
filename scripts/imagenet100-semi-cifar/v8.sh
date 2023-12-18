@@ -9,7 +9,7 @@
 #    --project semi-IPC
 #done
 
-CUDA_VISIBLE_DEVICES=3 python main_imagenet100_v8.py \
+CUDA_VISIBLE_DEVICES=3 python main_cifar100_v8.py \
   --num_tasks 10 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
   --pretrained_method byol \
