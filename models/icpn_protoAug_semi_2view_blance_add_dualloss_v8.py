@@ -13,6 +13,7 @@ class IncrementalCPN(pl.LightningModule):
         self.dim_feature = dim_feature
         self.num_calsses = num_classes
         self.pl_lambda = pl_lambda
+        self.pa_lambda = 1.0
         self.lr = lr
         self.epochs = epochs
         self.warmup_epochs = warmup_epochs
@@ -116,7 +117,7 @@ class IncrementalCPN(pl.LightningModule):
         target_weak_high_conf = max_logits_weak[mask]
         semi_dual_loss = F.cross_entropy(-1. * self(x_strong_high_conf), target_weak_high_conf)
 
-        loss = ce_loss + semi_dual_loss + pl_loss * self.pl_lambda + protoAug_loss
+        loss = ce_loss + semi_dual_loss + pl_loss * self.pl_lambda + protoAug_loss * self.pa_lambda
 
         out = {"ce_loss": ce_loss,
                "pl_loss": pl_loss,
