@@ -23,17 +23,4 @@ CUDA_VISIBLE_DEVICES=0 python main_cub200_v4_5sample.py \
   --cpn_initial means
 
 
-#CUDA_VISIBLE_DEVICES=0 python main_cub200_v3.py \
-#  --num_classes 200 \
-#  --num_tasks 1 \
-#  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/test-code/semi-IPC-v9/cub200-resnet50.pth \
-#  --pretrained_method byol \
-#  --dataset cub200 \
-#  --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/cub200 \
-#  --pl_lambda 0.2 \
-#  --project semi-IPC-debug-v9 \
-#  --epochs 1 \
-#  --perfix v3-semi-dual- \
-#  --cpn_initial means
-
 
