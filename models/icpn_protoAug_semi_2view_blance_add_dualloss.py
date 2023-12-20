@@ -127,28 +127,6 @@ class IncrementalCPN(pl.LightningModule):
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
 
-    def validation_step_old(self, batch, batch_idx):
-        x, targets = batch
-        d = self.forward(x)
-        logits = -1. * d
-        # ce loss
-        ce_loss = F.cross_entropy(logits, targets)
-        # pl loss
-        pl_loss = torch.index_select(d, dim=1, index=targets)
-        pl_loss = torch.diagonal(pl_loss)
-        pl_loss = torch.mean(pl_loss)
-
-        # acc
-        preds = torch.argmax(logits, dim=1)
-        acc = torch.sum(preds == targets) / targets.shape[0]
-
-        protoAug_loss = 0.
-        loss = ce_loss + pl_loss * self.pl_lambda
-
-        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, 'protoAug_loss': protoAug_loss, "acc": acc, "loss": loss}
-        log_dict = {"val_" + k: v for k, v in out.items()}
-        self.log_dict(log_dict, on_epoch=True, sync_dist=True)
-        return out
 
     def validation_step(self, batch, batch_idx):
         x, targets = batch
