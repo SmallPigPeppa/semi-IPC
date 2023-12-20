@@ -119,7 +119,8 @@ def main():
 
         if task_idx == 0:
             _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=500, return_means=True)
-            supervised_data = keep_n_samples_per_class(train_dataset_task, n=500, return_means=False)
+            # supervised_data = keep_n_samples_per_class(train_dataset_task, n=500, return_means=False)
+            supervised_data = train_dataset_task
             model.dual_lambda = 0.
             model.pl_lambda = args.pl_lambda
         else:
