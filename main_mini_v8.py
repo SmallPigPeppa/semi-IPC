@@ -4,7 +4,7 @@ import wandb
 from torch.utils.data import DataLoader
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import seed_everything
-from utils.dataset_utils_v2 import get_dataset, split_dataset, get_dual_dataset, get_dataset_std
+from utils.dataset_utils_v2 import get_dual_dataset, get_dataset, get_dataset_std, split_dataset
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
@@ -152,7 +152,6 @@ def main():
             task_idx=[task_idx],
         )
 
-
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
         supervised_data_std = keep_n_samples_per_class(train_dataset_task_std, n=10)
         cpn_means = compute_class_means(supervised_data_std, encoder, batch_size=512)
@@ -160,7 +159,8 @@ def main():
         dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=4)
         supervised_loader = DataLoader(supervised_data, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
-        supervised_loader_std = DataLoader(supervised_data_std, batch_size=256, shuffle=True, pin_memory=True,num_workers=4)
+        supervised_loader_std = DataLoader(supervised_data_std, batch_size=256, shuffle=True, pin_memory=True,
+                                           num_workers=4)
         model.batch_size = 256
 
         train_loaders = {
