@@ -190,7 +190,7 @@ def main():
         model.train_loaders = train_loaders
         model.encoder = encoder
         model.protoAug_start()
-        if task_idx != 0:
+        if task_idx > 0:
             model.pl_lambda = 0.2
 
         trainer.fit(model, train_loaders, test_loader)
