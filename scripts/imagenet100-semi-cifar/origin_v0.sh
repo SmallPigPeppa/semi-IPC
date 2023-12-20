@@ -18,7 +18,7 @@ CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v0.py \
   --pl_lambda 0.2 \
   --project semi-IPC-debug-v9-cifar \
   --epochs 50 \
-  --perfix origin-v0- \
+  --perfix origin-v0-s10- \
   --cpn_initial means
 
 
