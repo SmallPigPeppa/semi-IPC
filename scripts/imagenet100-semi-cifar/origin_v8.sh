@@ -17,7 +17,7 @@ CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8.py \
   --pretrained_method byol \
   --dataset cifar100 \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \
-  --pl_lambda 0.2 \
+  --pl_lambda 0.02 \
   --project semi-IPC-cifar \
   --epochs 50 \
   --perfix v8- \
