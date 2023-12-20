@@ -11,7 +11,7 @@
 
 
 
-CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_b60.py \
+CUDA_VISIBLE_DEVICES=1 python main_cifar100_origin_v8_s5_b60.py \
   --num_tasks 9 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
   --pretrained_method byol \
