@@ -16,7 +16,7 @@ CUDA_VISIBLE_DEVICES=2 python main_cifar100_origin_b60.py \
   --dataset cifar100 \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \
   --pl_lambda 0.5 \
-  --project semi-cifar \
+  --project semi-IPC-cifar \
   --epochs 50 \
   --perfix b60-origin- \
   --cpn_initial means
