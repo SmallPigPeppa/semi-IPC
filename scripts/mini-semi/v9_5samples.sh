@@ -9,7 +9,7 @@
 #    --project semi-IPC
 #done
 
-CUDA_VISIBLE_DEVICES=2 python main_mini_v9_s5.py \
+CUDA_VISIBLE_DEVICES=1 python main_mini_v9_s5.py \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/test-code/solo-learn-latest/trained_models/byol/frxj6kgh/byol-imagenet-mini-frxj6kgh-ep=999.ckpt \
   --pretrained_method byol \
@@ -22,7 +22,7 @@ CUDA_VISIBLE_DEVICES=2 python main_mini_v9_s5.py \
   --cpn_initial means
 
 
-CUDA_VISIBLE_DEVICES=2 python main_mini_v9_s5.py \
+CUDA_VISIBLE_DEVICES=1 python main_mini_v9_s5.py \
   --num_tasks 10 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/test-code/solo-learn-latest/trained_models/byol/frxj6kgh/byol-imagenet-mini-frxj6kgh-ep=999.ckpt \
   --pretrained_method byol \
