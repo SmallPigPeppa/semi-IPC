@@ -123,9 +123,9 @@ def main():
             supervised_data = train_dataset_task
             model.dual_lambda = 0.
             model.pl_lambda = args.pl_lambda
-            train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
-            dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
-            supervised_loader = DataLoader(supervised_data, batch_size=256, shuffle=True, pin_memory=True,num_workers=4)
+            train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True,  num_workers=4)
+            dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True,  num_workers=4)
+            supervised_loader = DataLoader(supervised_data, batch_size=256, shuffle=True, num_workers=4)
             test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
         else:
