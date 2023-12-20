@@ -9,7 +9,7 @@
 #    --project semi-IPC
 #done
 
-CUDA_VISIBLE_DEVICES=0 python main_mini_v8.py \
+CUDA_VISIBLE_DEVICES=1 python main_mini_v8.py \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/test-code/solo-learn-latest/trained_models/byol/frxj6kgh/byol-imagenet-mini-frxj6kgh-ep=999.ckpt \
   --pretrained_method byol \
