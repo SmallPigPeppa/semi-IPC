@@ -9,17 +9,18 @@
 #    --project semi-IPC
 #done
 
-CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_b60.py \
+CUDA_VISIBLE_DEVICES=2 python main_cifar100_origin_b60.py \
   --num_tasks 9 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/t3pmk238/byol-imagenet32-t3pmk238-ep=999.ckpt \
   --pretrained_method byol \
   --dataset cifar100 \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \
   --pl_lambda 0.5 \
-  --project semi-IPC-debug-v9-cifar \
+  --project semi-cifar \
   --epochs 50 \
   --perfix b60-origin- \
   --cpn_initial means
+
 
 
 
