@@ -18,9 +18,6 @@ class IncrementalCPN(pl.LightningModule):
         self.extra_args = kwargs
         self.prototypes = nn.ParameterList(
             [nn.Parameter(torch.randn(1, self.dim_feature)) for i in range(num_classes)])
-        self.pl_lambda = 0.
-        self.protoAug_lambda = 0.
-        self.dual_lambda = 1.0
 
     def task_initial(self, current_tasks, means=None):
         if means is not None:
@@ -58,11 +55,7 @@ class IncrementalCPN(pl.LightningModule):
         pl_loss = torch.index_select(d, dim=1, index=targets)
         pl_loss = torch.diagonal(pl_loss)
         pl_loss = torch.mean(pl_loss)
-        # all loss
-        # loss = ce_loss + pl_loss * self.pl_lambda
-        # acc
-        preds = torch.argmax(logits, dim=1)
-        acc = torch.sum(preds == targets) / targets.shape[0]
+
 
         if self.current_task_idx > 0:
             x_all = x
@@ -74,8 +67,6 @@ class IncrementalCPN(pl.LightningModule):
         logits_all = -1. * self.forward(x_all)
         protoAug_loss = F.cross_entropy(logits_all, y_all)
 
-        # loss = ce_loss + pl_loss * self.pl_lambda + protoAug_loss * self.protoAug_lambda
-        # loss = ce_loss + pl_loss * self.pl_lambda
 
         # unlabel data
         x_unlabel, targets_unlabel = batch['unsupervised_loader']
@@ -84,18 +75,11 @@ class IncrementalCPN(pl.LightningModule):
         probabilities_unlabel = F.softmax(logits_unlabel, dim=1)
         _, max_logits_unlabel = torch.max(logits_unlabel, dim=1)
         _, max_probabilities_unlabel = torch.max(probabilities_unlabel, dim=1)
-        # mask = logits_unlabel[torch.arange(logits_unlabel.shape[0]), max_logits_unlabel] > 0.75
         mask = probabilities_unlabel[torch.arange(probabilities_unlabel.shape[0]), max_probabilities_unlabel] > 0.95
 
-        # import pdb;pdb.set_trace()
 
         x_unlabel_high_conf = x_unlabel[mask]
         target_unlabel_high_conf = max_logits_unlabel[mask]
-        target_unlabel_high_conf_2 = targets_unlabel[mask]
-        # target_unlabel_high_conf = targets_unlabel[mask]
-
-        # import pdb;pdb.set_trace()
-
         semi_x_all = torch.cat([x, x_unlabel_high_conf])
         semi_target_all = torch.cat([targets, target_unlabel_high_conf])
         semi_loss = F.cross_entropy(-1. * self(semi_x_all), semi_target_all)
@@ -110,19 +94,20 @@ class IncrementalCPN(pl.LightningModule):
         target_weak_high_conf = max_logits_weak[mask]
         semi_dual_loss = F.cross_entropy(-1. * self(x_strong_high_conf), target_weak_high_conf)
 
-        # loss = ce_loss + pl_loss * self.pl_lambda + semi_loss
+        loss = ce_loss + semi_dual_loss
+        # acc
+        preds = torch.argmax(logits, dim=1)
+        acc = torch.sum(preds == targets) / targets.shape[0]
 
-        # if semi_loss < 0.2:
-        #     semi_loss = 0.
-        # if pl_loss < 80:
-        #     pl_loss = 0.
-        # loss = pl_loss * self.pl_lambda + ce_loss + semi_loss
-        # loss = pl_loss * self.pl_lambda + ce_loss
-        loss = ce_loss + semi_dual_loss * self.dual_lambda + pl_loss * self.pl_lambda
+        out = {
+        "ce_loss": ce_loss,
+        "pl_loss": pl_loss,
+        "semi_loss": semi_loss,
+        "semi_dual_loss": semi_dual_loss,
+        "protoAug_loss": protoAug_loss,
+        "acc": acc,
+        "loss": loss}
 
-        out = {"ce_loss": ce_loss, "pl_loss": pl_loss, "semi_loss": semi_loss, "semi_dual_loss": semi_dual_loss,
-               "protoAug_loss": protoAug_loss,
-               "acc": acc, "loss": loss}
         log_dict = {"train_" + k: v for k, v in out.items()}
         self.log_dict(log_dict, on_epoch=True, sync_dist=True)
         return out
