@@ -16,7 +16,7 @@ CUDA_VISIBLE_DEVICES=1 python main_cifar100_origin_v8_remove_pl_protoaug.py \
   --dataset cifar100 \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \
   --pl_lambda 0.2 \
-  --project semi-IPC--cifar \
+  --project semi-IPC-cifar \
   --epochs 50 \
   --perfix v8-remove-pl-protoaug \
   --cpn_initial means
