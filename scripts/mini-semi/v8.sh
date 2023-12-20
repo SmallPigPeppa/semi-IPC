@@ -9,16 +9,16 @@
 #    --project semi-IPC
 #done
 
-CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8.py \
+CUDA_VISIBLE_DEVICES=1 python main_mini_v8.py \
   --num_tasks 5 \
-  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
+  --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/test-code/solo-learn-latest/trained_models/byol/frxj6kgh/byol-imagenet-mini-frxj6kgh-ep=999.ckpt \
   --pretrained_method byol \
-  --dataset imagenet100 \
-  --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet100 \
+  --dataset mini \
+  --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/miniImageNet \
   --pl_lambda 0.2 \
-  --project semi-IPC-debug-v9 \
+  --project semi-IPC-mini \
   --epochs 50 \
-  --perfix v8-semi-dual- \
+  --perfix v8- \
   --cpn_initial means
 
 
