@@ -114,8 +114,8 @@ def main():
         # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
         train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True)
-        dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True)
-        test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
+        # dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True)
+        # test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
         if task_idx == 0:
             _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=500, return_means=True)
@@ -123,13 +123,20 @@ def main():
             supervised_data = train_dataset_task
             model.dual_lambda = 0.
             model.pl_lambda = args.pl_lambda
+            train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
+            dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
+            supervised_loader = DataLoader(supervised_data, batch_size=256, shuffle=True, pin_memory=True,num_workers=4)
+            test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
+
         else:
             _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=5, return_means=True)
             supervised_data = keep_n_samples_per_class(train_dataset_task, n=5, return_means=False)
             model.dual_lambda = 1.0
             model.pl_lambda = 0.
-
-        supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True)
+            train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True)
+            dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True)
+            supervised_loader = DataLoader(supervised_data, batch_size=256, shuffle=True)
+            test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
 
         train_loaders = {
             "unsupervised_loader": train_loader,
