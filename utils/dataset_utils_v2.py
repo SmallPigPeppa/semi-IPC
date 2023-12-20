@@ -73,6 +73,29 @@ def get_dual_dataset(dataset, data_path):
         dual_dataset = DualTransformDataset(train_dataset, weak, strong)
         return dual_dataset
 
+    elif dataset in ["mini"]:
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+        train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
+                                             transform=None)
+        weak = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomResizedCrop(84),
+            transforms.ToTensor(),
+            transforms.Normalize(mean, std)])
+        strong = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomResizedCrop(84),
+            RandAugmentMC(n=2, m=10),
+            transforms.ToTensor(),
+            transforms.Normalize(mean, std)])
+
+        dual_dataset = DualTransformDataset(train_dataset, weak, strong)
+        return dual_dataset
+
+
+
+
 
 def get_dataset(dataset, data_path):
     # assert dataset in ["cifar100", "imagenet100"]
@@ -176,6 +199,20 @@ def get_dataset_std(dataset, data_path):
         elif dataset == "cub200":
             test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "test"),
                                                 transform=imagenet_tansforms)
+    elif dataset in ["mini"]:
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+        imagenet_tansforms = transforms.Compose([
+            transforms.Resize(84),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=mean, std=std),
+        ])
+        train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
+                                             transform=imagenet_tansforms)
+
+        test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "val"),
+                                            transform=imagenet_tansforms)
+
 
     return train_dataset, test_dataset
 
