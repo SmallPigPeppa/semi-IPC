@@ -105,16 +105,22 @@ def main():
     model = IncrementalCPN(**args.__dict__)
 
     classes_order = torch.tensor(
-        [68, 56, 78, 8, 23, 84, 90, 65, 74, 76, 40, 89, 3, 92, 55, 9, 26, 80, 43, 38, 58, 70, 77, 1, 85, 19, 17, 50, 28,
-         53, 13, 81, 45, 82, 6, 59, 83, 16, 15, 44, 91, 41, 72, 60, 79, 52, 20, 10, 31, 54, 37, 95, 14, 71, 96, 98, 97,
-         2, 64, 66, 42, 22, 35, 86, 24, 34, 87, 21, 99, 0, 88, 27, 18, 94, 11, 12, 47, 25, 30, 46, 62, 69, 36, 61, 7,
-         63, 75, 5, 32, 4, 51, 48, 73, 93, 39, 67, 29, 49, 57, 33])
+        [168, 136, 51, 9, 183, 101, 171, 99, 42, 159, 191, 70, 16, 188, 27, 10, 175, 26, 68, 187, 98, 6, 85, 35, 112,
+         43, 100, 0, 103, 181, 88, 59, 4, 2, 116, 174, 94, 80, 106, 1, 147, 17, 141, 131, 72, 23, 173, 54, 197, 118, 87,
+         32, 79, 104, 91, 19, 135, 107, 178, 36, 11, 199, 142, 8, 122, 3, 28, 57, 153, 172, 190, 56, 49, 44, 97, 62,
+         151, 169, 194, 55, 192, 12, 189, 78, 66, 180, 15, 137, 109, 134, 92, 119, 126, 52, 170, 40, 148, 65, 144, 64,
+         138, 45, 77, 89, 154, 90, 71, 193, 74, 30, 113, 143, 96, 84, 67, 50, 186, 156, 69, 21, 18, 111, 108, 58, 125,
+         157, 150, 110, 182, 129, 166, 83, 81, 60, 13, 165, 14, 176, 63, 117, 5, 22, 145, 121, 38, 41, 82, 127, 114, 20,
+         31, 53, 37, 163, 196, 130, 152, 162, 86, 76, 24, 34, 184, 149, 33, 128, 198, 155, 146, 167, 139, 120, 140, 102,
+         47, 25, 158, 123, 46, 164, 61, 7, 115, 75, 133, 160, 105, 132, 179, 124, 48, 73, 93, 39, 95, 195, 29, 177, 185,
+         161])
+    # num_classes = 200
     # classes_order = torch.randperm(num_classes)
     # classes_order = torch.tensor(list(range(args.num_classes)))
-    # tasks_initial = classes_order[:int(args.num_classes / 2)].chunk(1)
-    # tasks_incremental = classes_order[int(args.num_classes / 2):args.num_classes].chunk(args.num_tasks)
-    # tasks = tasks_initial + tasks_incremental
-    tasks = classes_order.chunk(args.num_tasks)
+    # tasks = classes_order.chunk(args.num_tasks)
+    tasks_initial = classes_order[:int(args.num_classes / 2)].chunk(1)
+    tasks_incremental = classes_order[int(args.num_classes / 2):args.num_classes].chunk(args.num_tasks - 1)
+    tasks = tasks_initial + tasks_incremental
     train_dataset, test_dataset = get_dataset(dataset=args.dataset, data_path=args.data_path)
     train_dataset_std, _ = get_dataset_std(dataset=args.dataset, data_path=args.data_path)
     dual_dataset = get_dual_dataset(dataset=args.dataset, data_path=args.data_path)
