@@ -19,7 +19,7 @@ CUDA_VISIBLE_DEVICES=0 python main_cub200_v8.py \
   --pl_lambda 0.2 \
   --project semi-IPC-cub \
   --epochs 50 \
-  --perfix v8 \
+  --perfix v8- \
   --cpn_initial means
 
 
