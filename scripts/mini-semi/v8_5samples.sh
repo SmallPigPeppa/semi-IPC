@@ -15,7 +15,7 @@ CUDA_VISIBLE_DEVICES=1 python main_mini_v8_s5.py \
   --pretrained_method byol \
   --dataset mini \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/miniImageNet \
-  --pl_lambda 0.1 \
+  --pl_lambda 0.5 \
   --project semi-IPC-mini \
   --epochs 50 \
   --perfix s5-v8- \
@@ -28,7 +28,7 @@ CUDA_VISIBLE_DEVICES=1 python main_mini_v8_s5.py \
   --pretrained_method byol \
   --dataset mini \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/miniImageNet \
-  --pl_lambda 0.1 \
+  --pl_lambda 0.5 \
   --project semi-IPC-mini \
   --epochs 50 \
   --perfix s5-v8- \
