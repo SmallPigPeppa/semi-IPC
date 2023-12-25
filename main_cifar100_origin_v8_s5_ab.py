@@ -113,8 +113,8 @@ def main():
             train_dataset=train_dataset_task,
             test_dataset=test_dataset_task,
             return_means=True)
-        _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
-        supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
+        _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=5, return_means=True)
+        supervised_data = keep_n_samples_per_class(train_dataset_task, n=5)
 
 
         train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True)
