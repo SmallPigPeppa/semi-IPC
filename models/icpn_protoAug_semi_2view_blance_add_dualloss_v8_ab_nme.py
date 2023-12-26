@@ -65,6 +65,9 @@ class IncrementalCPN(pl.LightningModule):
         return d
 
     def training_step(self, batch, batch_idx):
+        pass
+    
+    def training_step2(self, batch, batch_idx):
         x, targets = batch['supervised_loader']
         d = self.forward(x)
         logits = -1. * d
