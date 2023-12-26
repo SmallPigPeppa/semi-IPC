@@ -189,7 +189,8 @@ def main():
         model.train_loaders = train_loaders
         model.encoder = encoder
         model.protoAug_start()
-        trainer.fit(model, train_loaders, test_loader)
+        # trainer.fit(model, train_loaders, test_loader)
+        trainer.test(model,  test_loader)
         wandb.finish()
         model.protoAug_end()
 
