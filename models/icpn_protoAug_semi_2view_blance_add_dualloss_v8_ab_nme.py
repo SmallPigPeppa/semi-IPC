@@ -58,10 +58,10 @@ class IncrementalCPN(pl.LightningModule):
         self.encoder.eval()
         with torch.no_grad():
             x = self.encoder(x)
-        x = x.reshape(-1, 1, self.dim_feature)
-        prototypes_list = [i for i in self.prototypes]
-        d = torch.pow(x - torch.cat(prototypes_list), 2)
-        d = torch.sum(d, dim=2)
+            x = x.reshape(-1, 1, self.dim_feature)
+            prototypes_list = [i for i in self.prototypes]
+            d = torch.pow(x - torch.cat(prototypes_list), 2)
+            d = torch.sum(d, dim=2)
         return d
 
     def training_step(self, batch, batch_idx):
@@ -119,8 +119,8 @@ class IncrementalCPN(pl.LightningModule):
         target_weak_high_conf = max_logits_weak[mask]
         semi_dual_loss = F.cross_entropy(-1. * self(x_strong_high_conf), target_weak_high_conf)
 
-        # loss = ce_loss + semi_dual_loss * self.dual_lambda + pl_loss * self.pl_lambda + protoAug_loss * self.pa_lambda
-        loss = 0.
+        loss = ce_loss + semi_dual_loss * self.dual_lambda + pl_loss * self.pl_lambda + protoAug_loss * self.pa_lambda
+        # loss = 0.
 
         out = {"ce_loss": ce_loss,
                "pl_loss": pl_loss,
