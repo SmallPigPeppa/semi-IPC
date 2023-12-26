@@ -190,7 +190,7 @@ def main():
         model.encoder = encoder
         model.protoAug_start()
         # trainer.fit(model, train_loaders, test_loader)
-        trainer.val(model,  test_loader)
+        trainer.validate(model,  test_loader)
         wandb.finish()
         model.protoAug_end()
 
