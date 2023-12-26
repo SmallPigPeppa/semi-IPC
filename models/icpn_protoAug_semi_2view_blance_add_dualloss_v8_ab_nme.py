@@ -33,8 +33,7 @@ class IncrementalCPN(pl.LightningModule):
         for i in no_grad_idx:
             self.prototypes[i].requires_grad = False
         for i in current_tasks:
-            self.prototypes[i].requires_grad = False
-
+            self.prototypes[i].requires_grad = True
 
     def configure_optimizers(self):
         optimizer = torch.optim.SGD(self.parameters(), lr=self.lr)
@@ -120,7 +119,8 @@ class IncrementalCPN(pl.LightningModule):
         target_weak_high_conf = max_logits_weak[mask]
         semi_dual_loss = F.cross_entropy(-1. * self(x_strong_high_conf), target_weak_high_conf)
 
-        loss = ce_loss + semi_dual_loss * self.dual_lambda + pl_loss * self.pl_lambda + protoAug_loss * self.pa_lambda
+        # loss = ce_loss + semi_dual_loss * self.dual_lambda + pl_loss * self.pl_lambda + protoAug_loss * self.pa_lambda
+        loss = 0.
 
         out = {"ce_loss": ce_loss,
                "pl_loss": pl_loss,
