@@ -1,7 +1,7 @@
 
 
 # +pl + dual + pa
-CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ab.py \
   --num_tasks 10 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
@@ -13,7 +13,7 @@ CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
   --perfix v8- \
   --cpn_initial means
 
-CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ab.py \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
@@ -26,7 +26,7 @@ CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
   --cpn_initial means
 
 # +pl + dual
-CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ab.py \
   --num_tasks 10 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
@@ -40,7 +40,7 @@ CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
   --perfix v8- \
   --cpn_initial means
 
-CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ab.py \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
@@ -60,7 +60,7 @@ CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
 
 
 # +pl
-CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ab.py \
   --num_tasks 10 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
@@ -74,7 +74,7 @@ CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
   --perfix v8- \
   --cpn_initial means
 
-CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ab.py \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
@@ -89,7 +89,7 @@ CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
   --cpn_initial means
 
 # +None
-CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ab.py \
   --num_tasks 10 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
@@ -103,7 +103,7 @@ CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
   --perfix v8- \
   --cpn_initial means
 
-CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ab.py \
   --num_tasks 5 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
