@@ -1,4 +1,4 @@
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 5 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/barlow_twins/s5fh5bvf/barlow_twins-imagenet32-s5fh5bvf-ep=999.ckpt \
   --pretrained_method barlow \
@@ -10,7 +10,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
   --perfix s5-v8- \
   --cpn_initial means
 
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 5 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/mocov2plus/1kguyx5e/mocov2plus-imagenet32-1kguyx5e-ep=999.ckpt \
   --pretrained_method moco \
@@ -23,7 +23,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
   --cpn_initial means
 
 
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 5 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/simclr/2mv95572/simclr-imagenet32-2mv95572-ep=999.ckpt \
   --pretrained_method simclr \
@@ -36,7 +36,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
   --cpn_initial means
 
 
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 5 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/simsiam/22bn8hmt/simsiam-imagenet32-22bn8hmt-ep=1000.ckpt \
   --pretrained_method simsiam \
@@ -49,7 +49,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
   --cpn_initial means
 
 
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 5 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/swav/yaaves5o/swav-imagenet32-yaaves5o-ep=999.ckpt \
   --pretrained_method swav \
@@ -62,7 +62,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
   --cpn_initial means
 
 
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 10 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/barlow_twins/s5fh5bvf/barlow_twins-imagenet32-s5fh5bvf-ep=999.ckpt \
   --pretrained_method barlow \
@@ -74,7 +74,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
   --perfix s5-v8- \
   --cpn_initial means
 
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 10 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/mocov2plus/1kguyx5e/mocov2plus-imagenet32-1kguyx5e-ep=999.ckpt \
   --pretrained_method moco \
@@ -87,7 +87,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
   --cpn_initial means
 
 
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 10 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/simclr/2mv95572/simclr-imagenet32-2mv95572-ep=999.ckpt \
   --pretrained_method simclr \
@@ -100,7 +100,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
   --cpn_initial means
 
 
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 10 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/simsiam/22bn8hmt/simsiam-imagenet32-22bn8hmt-ep=1000.ckpt \
   --pretrained_method simsiam \
@@ -113,7 +113,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
   --cpn_initial means
 
 
-CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_s5_ab.py \
   --num_tasks 10 \
    --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/swav/yaaves5o/swav-imagenet32-yaaves5o-ep=999.ckpt \
   --pretrained_method swav \
