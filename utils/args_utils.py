@@ -31,11 +31,13 @@ def parse_args_cpn() -> argparse.Namespace:
     parser.add_argument("--tau", type=float, default=1.0)
 
 
+
     parser.add_argument("--cpn_initial", type=str, choices=["random", "means"], default="random")
 
     parser.add_argument("--dataset", type=str, choices=["cifar100", "imagenet100","imagenet-subset","imagenet-subset-new","cub200","mini"], default="cifar100")
     parser.add_argument("--data_path", type=str, default="/share/wenzhuoliu/torch_ds")
     parser.add_argument("--num_classes", type=int, default=100)
+    parser.add_argument("--num_sample", type=int, default=5)
 
     parser.add_argument("--epochs", type=int, default=300)
 
