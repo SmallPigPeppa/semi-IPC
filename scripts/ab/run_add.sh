@@ -53,7 +53,7 @@ CUDA_VISIBLE_DEVICES=3 python main_imagenet100_v8_ab.py \
   --project semi-IPC-ab \
   --epochs 50 \
   --perfix v8- \
-  --cpn_initial means &
+  --cpn_initial means
 
 
 CUDA_VISIBLE_DEVICES=0 python main_mini_v8_s5_ab.py \
@@ -116,7 +116,7 @@ CUDA_VISIBLE_DEVICES=3 python main_cifar100_origin_v8_s5_ab_noiu.py \
   --project semi-IPC-ab \
   --epochs 50 \
   --perfix noiu- \
-  --cpn_initial means &
+  --cpn_initial means
 
 
 CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ab_noiu.py \
