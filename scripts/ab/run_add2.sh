@@ -25,3 +25,4 @@ CUDA_VISIBLE_DEVICES=1 python main_imagenet100_v8_ab.py \
   --epochs 50 \
   --perfix v8- \
   --cpn_initial means
+
