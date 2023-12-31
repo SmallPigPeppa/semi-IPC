@@ -12,6 +12,11 @@ def get_pretrained_encoder(ckpt_path, cifar=True):
             warnings.warn(
                 "You are using an older checkpoint. Use a new one as some issues might arrise."
             )
+        if "model" in k:
+            state[k.replace("model.", "")] = state[k]
+            warnings.warn(
+                "You are using an older checkpoint. Use a new one as some issues might arrise."
+            )
         if "backbone" in k:
             state[k.replace("backbone.", "")] = state[k]
         del state[k]
