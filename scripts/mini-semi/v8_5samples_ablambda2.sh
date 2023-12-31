@@ -1,4 +1,7 @@
-for lambda in 0.01 0.05 0.1 0.5 1.0 2.0; do
+
+
+#for lambda in 0.01 0.05 0.1 0.5 1.0 2.0; do
+for lambda in  0.2 0.8 1.5; do
 
     CUDA_VISIBLE_DEVICES=2 python main_mini_v8_s5.py \
     --num_tasks 5 \
