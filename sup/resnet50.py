@@ -36,6 +36,7 @@ class MSC(LightningModule):
         acc = self.metrics_acc(y_hat, y)
 
         result_dict = {
+            "total_loss": ce_loss,
             "ce_loss": ce_loss,
             "acc": acc,
         }
