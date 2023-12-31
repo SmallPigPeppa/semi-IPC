@@ -1,6 +1,6 @@
 
-for lambda in 0.01 0.05 0.1 0.5 1.0 2.0; do
-
+#for lambda in 0.01 0.05 0.1 0.5 1.0 2.0; do
+for lambda in  0.2 0.8 1.5; do
   CUDA_VISIBLE_DEVICES=4 python main_imagenet100_v8.py \
     --num_tasks 10 \
     --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
