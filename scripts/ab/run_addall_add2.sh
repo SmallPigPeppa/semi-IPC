@@ -1,1 +1,1 @@
-bash scripts/imagenet100-semi/v8_abnum.sh
+bash scripts/imagenet100-semi/v8_abnum_add1.sh
