@@ -215,7 +215,7 @@ class IncrementalCPN(pl.LightningModule):
             print(f"Task Acc | {avg_acc.item() * 100:12.2f}%")
             print(f"Avg  Acc | {avg_acc.item() * 100:12.2f}%")
             print(f"PD       | {avg_acc.item() * 100:12.2f}%")
-            print(f"CER      | {avg_acc.item() * 100:12.2f}%")
+            print(f"CER      | {(self.task_idx - 1) * 100:12.2f}%")
             print(f"LSRR     | {avg_acc.item() * 100:12.2f}%")
             print("-" * 30)
 

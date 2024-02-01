@@ -4,7 +4,7 @@ import wandb
 from torch.utils.data import DataLoader
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import seed_everything
-from utils.dataset_utils_v2 import get_dual_dataset, get_dataset, get_dataset_std, split_dataset,get_pretrained_dataset
+from utils.dataset_utils_v2 import get_dual_dataset, get_dataset, get_dataset_std, split_dataset, get_pretrained_dataset
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
@@ -13,6 +13,7 @@ from collections import defaultdict
 import random
 from torch.utils.data import Subset, Dataset
 from tqdm import tqdm
+
 
 def keep_n_samples_per_class(dataset, n, return_means=False):
     class_samples = defaultdict(list)
@@ -116,13 +117,10 @@ def main():
         _, cpn_means = keep_n_samples_per_class(train_dataset_task_fix, n=10, return_means=True)
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
 
-
         train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True)
         dual_loader = DataLoader(dual_dataset_task, batch_size=256, shuffle=True)
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True)
         supervised_loader = DataLoader(supervised_data, batch_size=64, shuffle=True)
-
-
 
         model.batch_size = 256
 
@@ -137,6 +135,8 @@ def main():
             model.task_initial(current_tasks=tasks[task_idx], means=cpn_means)
         else:
             model.task_initial(current_tasks=tasks[task_idx])
+
+        model.task_idx = task_idx
         trainer = pl.Trainer(
             gpus=num_gpus,
             max_epochs=args.epochs,
