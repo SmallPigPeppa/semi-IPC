@@ -19,7 +19,7 @@ CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_test.py \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds \
   --pl_lambda 0.02 \
   --project null \
-  --epochs 1 \
+  --epochs 50 \
   --perfix v8- \
   --cpn_initial means
 
