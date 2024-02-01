@@ -205,7 +205,7 @@ class IncrementalCPN(pl.LightningModule):
     def validation_epoch_end(self, validation_step_outputs):
         # 收集所有批次的准确率
         print(validation_step_outputs)
-        avg_acc = torch.stack([x['val_acc'] for x in validation_step_outputs]).mean()
+        avg_acc = torch.stack([x['acc'] for x in validation_step_outputs]).mean()
 
         # 日志记录平均准确率
         # self.log('val_avg_acc', avg_acc, on_epoch=True, prog_bar=True, logger=True)
