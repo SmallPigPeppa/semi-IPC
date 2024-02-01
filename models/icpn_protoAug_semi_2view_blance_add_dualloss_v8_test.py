@@ -212,15 +212,16 @@ class IncrementalCPN(pl.LightningModule):
             print(f"\nTest on task{self.task_idx}\n")
             self.acc_list.append(avg_acc.item())  # 更新平均准确率列表
             avg_list_acc = sum(self.acc_list) / len(self.acc_list)
-            print("\nMetric   |       Value")
-            print("-" * 30)
-            # 格式化输出为百分数形式，精确到小数点后两位
-            print(f"Task Acc | {avg_acc.item() * 100:12.2f}%")
-            print(f"Avg  Acc | {avg_list_acc * 100:12.2f}%")
-            print(f"PD       | {(self.acc_list[0] - self.acc_list[-1]) * 100:12.2f}%")
-            print(f"CER      | {(self.task_idx) * 100:12.2f}%")
-            print(f"LSRR     | {lsrr * 100:12.2f}%")
-            print("-" * 30)
+            space = "    "  # 定义空格变量，用于在每行前添加
+            print(space + "Metric   |       Value")
+            print(space + "-" * 30)
+            # 格式化输出为百分数形式，精确到小数点后两位，每行前加上空格
+            print(space + f"Task Acc | {avg_acc.item() * 100:12.2f}%")
+            print(space + f"Avg  Acc | {avg_list_acc * 100:12.2f}%")
+            print(space + f"PD       | {(self.acc_list[0] - self.acc_list[-1]) * 100:12.2f}%")
+            print(space + f"CER      | {(self.task_idx) * 100:12.2f}%")
+            print(space + f"LSRR     | {lsrr * 100:12.2f}%")
+            print(space + "-" * 30)
 
     def protoAug_start(self):
         # self.radius = 0.1
