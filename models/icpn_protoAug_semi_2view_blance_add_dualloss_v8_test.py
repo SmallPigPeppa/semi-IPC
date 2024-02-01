@@ -216,7 +216,7 @@ class IncrementalCPN(pl.LightningModule):
             print(space + "Metric   |       Value")
             print(space + "-" * 30)
             # 格式化输出为百分数形式，精确到小数点后两位，每行前加上空格
-            print(space + f"Task Acc | {avg_acc.item() * 100:12.2f}%")
+            print(space + f"Last Acc | {avg_acc.item() * 100:12.2f}%")
             print(space + f"Avg  Acc | {avg_list_acc * 100:12.2f}%")
             print(space + f"PD       | {(self.acc_list[0] - self.acc_list[-1]) * 100:12.2f}%")
             print(space + f"CER      | {(self.task_idx) * 100:12.2f}%")
