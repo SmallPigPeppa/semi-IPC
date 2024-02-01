@@ -20,7 +20,7 @@ class IncrementalCPN(pl.LightningModule):
         self.extra_args = kwargs
         self.prototypes = nn.ParameterList(
             [nn.Parameter(torch.randn(1, self.dim_feature)) for i in range(num_classes)])
-        self.avg_list = []
+        self.acc_list = []
 
         # self.protoAug_lambda = 1.0
 
