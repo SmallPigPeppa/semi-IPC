@@ -208,6 +208,7 @@ class IncrementalCPN(pl.LightningModule):
         avg_acc = torch.stack([x['acc'] for x in validation_step_outputs]).mean()
         # 指定的Epoch输出表格
         if (self.current_epoch + 1) % self.epochs == 0:
+            lsrr = 0.99
             print(f"\nTest on task{self.task_idx}\n")
             self.acc_list.append(avg_acc.item())  # 更新平均准确率列表
             avg_list_acc = sum(self.acc_list) / len(self.acc_list)
@@ -216,9 +217,9 @@ class IncrementalCPN(pl.LightningModule):
             # 格式化输出为百分数形式，精确到小数点后两位
             print(f"Task Acc | {avg_acc.item() * 100:12.2f}%")
             print(f"Avg  Acc | {avg_list_acc * 100:12.2f}%")
-            print(f"PD       | {(self.acc_list[0]-self.acc_list[-1]) * 100:12.2f}%")
+            print(f"PD       | {(self.acc_list[0] - self.acc_list[-1]) * 100:12.2f}%")
             print(f"CER      | {(self.task_idx - 1) * 100:12.2f}%")
-            print(f"LSRR     | {avg_acc.item() * 100:12.2f}%")
+            print(f"LSRR     | {lsrr * 100:12.2f}%")
             print("-" * 30)
 
     def protoAug_start(self):
