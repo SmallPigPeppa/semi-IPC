@@ -20,6 +20,7 @@ class IncrementalCPN(pl.LightningModule):
         self.extra_args = kwargs
         self.prototypes = nn.ParameterList(
             [nn.Parameter(torch.randn(1, self.dim_feature)) for i in range(num_classes)])
+        self.avg_list = []
 
         # self.protoAug_lambda = 1.0
 
@@ -203,18 +204,16 @@ class IncrementalCPN(pl.LightningModule):
         return out
 
     def validation_epoch_end(self, validation_step_outputs):
-        # 收集所有批次的准确率
-        # print(validation_step_outputs)
+        # 计算并记录当前Epoch的平均准确率
         avg_acc = torch.stack([x['acc'] for x in validation_step_outputs]).mean()
-
-        # 日志记录平均准确率
-        # self.log('val_avg_acc', avg_acc, on_epoch=True, prog_bar=True, logger=True)
-
-        # 你也可以在这里打印平均准确率，如果需要的话
-        print(f'Validation Average Accuracy: {avg_acc.item()}')
-
-        # 返回包含平均准确率的字典，如果需要在外部访问
-        # return {'val_avg_acc': avg_acc}
+        # 指定的Epoch输出表格
+        if (self.current_epoch + 1) % self.epochs == 0:
+            self.avg_acc_list.append(avg_acc.item())  # 更新平均准确率列表
+            print("\nEpoch | Avg Accuracy")
+            print("-" * 20)
+            for epoch, acc in enumerate(self.avg_acc_list, 1):
+                print(f"{epoch:5d} | {acc:12.4f}")
+            print("-" * 20)
 
     def protoAug_start(self):
         # self.radius = 0.1
