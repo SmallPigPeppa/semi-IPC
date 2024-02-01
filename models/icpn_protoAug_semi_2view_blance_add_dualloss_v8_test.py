@@ -209,10 +209,11 @@ class IncrementalCPN(pl.LightningModule):
         # 指定的Epoch输出表格
         if (self.current_epoch + 1) % self.epochs == 0:
             self.acc_list.append(avg_acc.item())  # 更新平均准确率列表
-            print("\nEpoch | Avg Accuracy")
+            print("\nMetric | Value")
             print("-" * 20)
-            for epoch, acc in enumerate(self.avg_acc_list, 1):
-                print(f"{epoch:5d} | {acc:12.4f}")
+            print(f"Task acc | {avg_acc.item():12.4f}")
+            # for epoch, acc in enumerate(self.acc_list, 1):
+            #     print(f"{epoch:5d} | {acc:12.4f}")
             print("-" * 20)
 
     def protoAug_start(self):
