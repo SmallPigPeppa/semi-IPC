@@ -209,12 +209,13 @@ class IncrementalCPN(pl.LightningModule):
         # 指定的Epoch输出表格
         if (self.current_epoch + 1) % self.epochs == 0:
             self.acc_list.append(avg_acc.item())  # 更新平均准确率列表
+            avg_list_acc = sum(self.acc_list) / len(self.acc_list)
             print("\nMetric   | Value")
             print("-" * 30)
             # 格式化输出为百分数形式，精确到小数点后两位
             print(f"Task Acc | {avg_acc.item() * 100:12.2f}%")
-            print(f"Avg  Acc | {avg_acc.item() * 100:12.2f}%")
-            print(f"PD       | {avg_acc.item() * 100:12.2f}%")
+            print(f"Avg  Acc | {avg_list_acc * 100:12.2f}%")
+            print(f"PD       | {(self.acc_list[0]-self.acc_list[-1]) * 100:12.2f}%")
             print(f"CER      | {(self.task_idx - 1) * 100:12.2f}%")
             print(f"LSRR     | {avg_acc.item() * 100:12.2f}%")
             print("-" * 30)
