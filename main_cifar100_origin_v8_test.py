@@ -138,6 +138,7 @@ def main():
 
         model.task_idx = task_idx
         trainer = pl.Trainer(
+            num_sanity_val_steps=0,
             gpus=num_gpus,
             max_epochs=args.epochs,
             # accumulate_grad_batches=1,
