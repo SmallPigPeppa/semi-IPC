@@ -208,7 +208,7 @@ class IncrementalCPN(pl.LightningModule):
         avg_acc = torch.stack([x['acc'] for x in validation_step_outputs]).mean()
         # 指定的Epoch输出表格
         if (self.current_epoch + 1) % self.epochs == 0:
-            self.avg_acc_list.append(avg_acc.item())  # 更新平均准确率列表
+            self.acc_list.append(avg_acc.item())  # 更新平均准确率列表
             print("\nEpoch | Avg Accuracy")
             print("-" * 20)
             for epoch, acc in enumerate(self.avg_acc_list, 1):
