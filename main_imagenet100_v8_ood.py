@@ -171,7 +171,7 @@ def main():
 
         supervised_data = keep_n_samples_per_class(train_dataset_task, n=10)
         supervised_data_std = keep_n_samples_per_class(train_dataset_task_std, n=10)
-        dual_dataset_task_ood=keep_n_samples_per_class(dual_dataset_ood,n=args.num_ood)
+        dual_dataset_task_ood = keep_n_samples_per_class(dual_dataset_task_ood,n=args.num_ood)
 
         cpn_means = compute_class_means(supervised_data_std, encoder, batch_size=512)
         train_loader = DataLoader(train_dataset_task, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
