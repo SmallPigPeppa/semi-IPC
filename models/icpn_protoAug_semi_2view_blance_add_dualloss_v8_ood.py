@@ -108,10 +108,10 @@ class IncrementalCPN(pl.LightningModule):
             protoAug_loss = 0.
 
         [x_weak, x_strong], targets_unlabel = batch['dual_loader']
-        # [x_weak_ood, x_strong_ood], targets_unlabel_ood = batch['dual_loader_ood']
-        #
-        # x_weak = torch.cat([x_weak, x_weak_ood], dim=0)
-        # x_strong = torch.cat([x_strong, x_strong_ood], dim=0)
+        [x_weak_ood, x_strong_ood], targets_unlabel_ood = batch['dual_loader_ood']
+
+        x_weak = torch.cat([x_weak, x_weak_ood], dim=0)
+        x_strong = torch.cat([x_strong, x_strong_ood], dim=0)
 
         logits_weak = -1. * self(x_weak)
         probabilities_weak = F.softmax(logits_weak, dim=1)
