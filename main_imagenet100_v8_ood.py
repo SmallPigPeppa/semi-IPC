@@ -179,7 +179,7 @@ def main():
         test_loader = DataLoader(test_dataset_task, batch_size=64, shuffle=True, pin_memory=True, num_workers=4)
         supervised_loader = DataLoader(supervised_data, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
         supervised_loader_std = DataLoader(supervised_data_std, batch_size=256, shuffle=True, pin_memory=True,num_workers=4)
-        ood_loader_std = DataLoader(dual_dataset_task_ood, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
+        dual_loader_ood = DataLoader(dual_dataset_task_ood, batch_size=256, shuffle=True, pin_memory=True, num_workers=4)
         model.batch_size = 256
 
         train_loaders = {
@@ -187,7 +187,7 @@ def main():
             "supervised_loader": supervised_loader,
             "supervised_loader_std": supervised_loader_std,
             "dual_loader": dual_loader,
-            "ood_loader": ood_loader_std,
+            "dual_loader_ood": dual_loader_ood,
         }
 
         if args.cpn_initial == "means":
