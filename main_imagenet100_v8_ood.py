@@ -8,7 +8,7 @@ from utils.dataset_utils_v2 import get_dataset, get_pretrained_dataset, split_da
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
-from models.icpn_protoAug_semi_2view_blance_add_dualloss_v8 import IncrementalCPN
+from models.icpn_protoAug_semi_2view_blance_add_dualloss_v8_ood import IncrementalCPN
 from collections import defaultdict
 import random
 from torch.utils.data import Subset, Dataset
