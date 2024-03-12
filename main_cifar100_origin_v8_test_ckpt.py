@@ -49,6 +49,14 @@ def keep_n_samples_per_class(dataset, n, return_means=False):
     else:
         return new_dataset
 
+import os
+
+def find_ckpt_path(root_dir):
+    for subdir, dirs, files in os.walk(root_dir):
+        for file in files:
+            if file.endswith(".ckpt"):
+                return os.path.join(subdir, file)
+    return None
 
 def main():
     seed_everything(5)
@@ -137,11 +145,25 @@ def main():
             model.task_initial(current_tasks=tasks[task_idx])
 
         model.task_idx = task_idx
+        # trainer = pl.Trainer(
+        #     num_sanity_val_steps=0,
+        #     gpus=num_gpus,
+        #     max_epochs=args.epochs,
+        #     # accumulate_grad_batches=1,
+        #     # gradient_clip_val=1.0,
+        #     sync_batchnorm=True,
+        #     accelerator='cuda',
+        #     logger=wandb_logger,
+        #     enable_checkpointing=True,
+        #     # checkpoint_callback=False,
+        #     precision=16,
+        #     callbacks=[lr_monitor]
+        #
+        # )
         trainer = pl.Trainer(
-            num_sanity_val_steps=0,
             gpus=num_gpus,
             max_epochs=args.epochs,
-            # accumulate_grad_batches=1,
+            accumulate_grad_batches=1,
             # gradient_clip_val=1.0,
             sync_batchnorm=True,
             accelerator='cuda',
@@ -155,7 +177,13 @@ def main():
         model.train_loaders = train_loaders
         model.encoder = encoder
         model.protoAug_start()
-        trainer.fit(model, train_loaders, test_loader)
+        root_dir = f'test-cifar100-task{task_idx}'
+        ckpt_path = find_ckpt_path(root_dir)
+
+        trainer.fit(model, train_loaders, test_loader, ckpt_path=ckpt_path)
+
+
+        # trainer.fit(model, train_loaders, test_loader)
         wandb.finish()
         model.protoAug_end()
 

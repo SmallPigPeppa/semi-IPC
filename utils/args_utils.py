@@ -36,6 +36,7 @@ def parse_args_cpn() -> argparse.Namespace:
 
     parser.add_argument("--dataset", type=str, choices=["cifar100", "imagenet100","imagenet-subset","imagenet-subset-new","cub200","mini"], default="cifar100")
     parser.add_argument("--data_path", type=str, default="/share/wenzhuoliu/torch_ds")
+
     parser.add_argument("--num_classes", type=int, default=100)
     parser.add_argument("--num_sample", type=int, default=5)
 
@@ -48,6 +49,10 @@ def parse_args_cpn() -> argparse.Namespace:
     parser.add_argument("--project", type=str, default="Incremental-CPN-v8.0")
     parser.add_argument("--entity", type=str, default="pigpeppa")
     parser.add_argument("--perfix", type=str, default="")
+
+
+    parser.add_argument("--data_path_ood", type=str, default="/share/wenzhuoliu/torch_ds")
+    parser.add_argument("--num_ood", type=int, default=100)
 
     # parse args
     args = parser.parse_args()

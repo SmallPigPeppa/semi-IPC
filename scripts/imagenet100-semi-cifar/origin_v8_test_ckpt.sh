@@ -25,7 +25,7 @@
 
 
 
-CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_test.py \
+CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_test_ckpt.py \
   --num_tasks 5 \
   --pretrained_model /home/wzliu/test-project/ssl-pretrain/cifar100/byol-imagenet32-t3pmk238-ep=999.ckpt \
   --pretrained_method byol \

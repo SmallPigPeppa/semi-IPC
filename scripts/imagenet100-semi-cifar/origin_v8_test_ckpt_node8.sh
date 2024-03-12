@@ -25,12 +25,12 @@
 
 
 
-CUDA_VISIBLE_DEVICES=0 python main_cifar100_origin_v8_test.py \
+CUDA_VISIBLE_DEVICES=1 python main_cifar100_origin_v8_test_ckpt.py \
   --num_tasks 5 \
-  --pretrained_model /home/wzliu/test-project/ssl-pretrain/cifar100/byol-imagenet32-t3pmk238-ep=999.ckpt \
+  --pretrained_model /lustre/home/wzliu/test-project/ssl-pretrain/cifar100/byol-imagenet32-t3pmk238-ep=999.ckpt \
   --pretrained_method byol \
   --dataset cifar100 \
-  --data_path /home/wzliu/torch_ds \
+  --data_path /lustre/home/wzliu/torch_ds \
   --pl_lambda 0.02 \
   --project test-cifar100 \
   --epochs 50 \
