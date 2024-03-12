@@ -126,7 +126,7 @@ def main():
         # model.batch_size = 64
         # model.semi_batch_size = 64
         wandb_logger = WandbLogger(
-            name=f"{args.perfix}{args.dataset}-{args.pretrained_method}-lambda{args.pl_lambda}-{args.num_tasks}tasks-steps{task_idx}",
+            name=f"n_ood{args.num_ood}-{args.perfix}{args.dataset}-{args.pretrained_method}-lambda{args.pl_lambda}-{args.num_tasks}tasks-steps{task_idx}",
             project=args.project,
             entity=args.entity,
             offline=False,
