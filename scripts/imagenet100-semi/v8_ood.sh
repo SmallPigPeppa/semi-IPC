@@ -21,6 +21,6 @@ CUDA_VISIBLE_DEVICES=0 python main_imagenet100_v8_ood.py \
   --perfix v8-semi-dual- \
   --cpn_initial means \
   --num_ood 20 \
-  --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet-subset-new
+  --data_path_ood /mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet-subset-new
 
 
