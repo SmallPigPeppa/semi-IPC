@@ -208,6 +208,33 @@ def get_dataset_upbound(dataset, data_path):
             test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "test"),
                                                 transform=test_tansforms)
 
+    elif dataset in ["mini"]:
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+
+
+        test_tansforms = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.Resize(84),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=mean, std=std),
+        ])
+
+        train_tansforms = transforms.Compose([
+            transforms.RandomResizedCrop(224),
+            transforms.RandomHorizontalFlip(),
+            transforms.Resize(84),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=mean, std=std),
+        ])
+
+        train_dataset = datasets.ImageFolder(root=os.path.join(data_path, "train"),
+                                             transform=train_tansforms)
+
+        test_dataset = datasets.ImageFolder(root=os.path.join(data_path, "val"),
+                                            transform=test_tansforms)
+
     return train_dataset, test_dataset
 
 
