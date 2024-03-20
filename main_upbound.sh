@@ -11,7 +11,7 @@
 #  --batch_size 256 &
 
 
-CUDA_VISIBLE_DEVICES=4,5,6,7 python main_upbound.py \
+python main_upbound.py \
   --num_tasks 1 \
   --pretrained_model /mnt/mmtech01/usr/liuwenzhuo/code/solo-learn/trained_models/byol/3tx0at58/byol-imagenet-3tx0at58-ep=999.ckpt \
   --pretrained_method byol \
@@ -19,7 +19,7 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 python main_upbound.py \
   --data_path /mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet100 \
   --project semi-IPC-upbound \
   --epochs 50 \
-  --num_gpus 4 \
+  --num_gpus 8 \
   --batch_size 256
 
 #
