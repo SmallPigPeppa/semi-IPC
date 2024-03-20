@@ -165,13 +165,13 @@ def get_dataset_upbound(dataset, data_path):
     if dataset == "cifar100":
         mean = [0.5071, 0.4867, 0.4408]
         std = [0.2675, 0.2565, 0.2761]
-        train_transforms = [
+        train_transforms = transforms.Compose([
             transforms.RandomCrop(32, padding=4),
             transforms.RandomHorizontalFlip(),
             transforms.ColorJitter(brightness=63 / 255),
             transforms.ToTensor(),
             transforms.Normalize(mean, std)
-        ]
+        ])
 
         test_transforms = transforms.Compose(
             [transforms.Resize(32), transforms.ToTensor(), transforms.Normalize(mean, std)])
