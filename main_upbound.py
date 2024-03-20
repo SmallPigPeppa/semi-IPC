@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import seed_everything
 from utils.dataset_utils_v2_cifar import get_dataset, get_pretrained_dataset, split_dataset, get_dual_dataset, \
-    get_dataset_std
+    get_dataset_std,get_dataset_upbound
 from pytorch_lightning.callbacks import LearningRateMonitor
 from utils.encoder_utils import get_pretrained_encoder
 from utils.args_utils import parse_args_cpn
@@ -33,7 +33,7 @@ def main():
     # tasks_incremental = classes_order[int(args.num_classes / 2):args.num_classes].chunk(args.num_tasks)
     # tasks = tasks_initial + tasks_incremental
     # tasks = classes_order.chunk(args.num_tasks)
-    train_dataset, test_dataset = get_dataset_std(dataset=args.dataset, data_path=args.data_path)
+    train_dataset, test_dataset = get_dataset_upbound(dataset=args.dataset, data_path=args.data_path)
     task_idx = 0
 
     # for task_idx in range(0, args.num_tasks):
