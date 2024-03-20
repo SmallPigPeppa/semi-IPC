@@ -59,8 +59,8 @@ def main():
     #         task_idx=list(range(task_idx + 1)),
     #     )
 
-    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=True, pin_memory=True, num_workers=4)
-    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, pin_memory=True, num_workers=4)
+    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=True, pin_memory=True, num_workers=8)
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, pin_memory=True, num_workers=8)
 
     trainer = pl.Trainer(
         gpus=args.num_gpus,
