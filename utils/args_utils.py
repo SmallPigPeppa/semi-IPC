@@ -54,6 +54,8 @@ def parse_args_cpn() -> argparse.Namespace:
     parser.add_argument("--data_path_ood", type=str, default="/share/wenzhuoliu/torch_ds")
     parser.add_argument("--num_ood", type=int, default=100)
 
+    parser.add_argument("--num_gpus", type=int, default=1)
+
     # parse args
     args = parser.parse_args()
     return args
