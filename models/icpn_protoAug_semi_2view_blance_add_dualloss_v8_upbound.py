@@ -27,9 +27,9 @@ class mFC(pl.LightningModule):
         return [optimizer], [scheduler]
 
     def forward(self, x):
-        self.encoder.eval()
-        with torch.no_grad():
-            x = self.encoder(x)
+        # self.encoder.eval()
+        # with torch.no_grad():
+        x = self.encoder(x)
         logits = self.fc(x)
         return logits
 
